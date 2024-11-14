@@ -4,7 +4,7 @@ import searchBook from "../static/javascript/views/books/searchBook.js";
 import editBook from "../static/javascript/views/books/editBook.js";
 import newBook from "../static/javascript/views/books/newBook.js";
 import showBook from "../static/javascript/views/books/showBook.js";
-// import deleteBook from "../static/js/views/books/deleteBook.js";
+import deleteBook from "../static/javascript/views/books/deleteBook.js";
 
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
@@ -28,9 +28,9 @@ const router = async () => {
         { path: '/books', view: books },
         { path: '/books/search', view: searchBook },
         { path: '/books/new', view: newBook },
-        { path: '/books/:id', view: showBook },
         { path: '/books/edit/:id', view: editBook },
-        // { path: '/books/delete/:id', view: deleteBook },
+        { path: '/books/delete/:id', view: deleteBook },
+        { path: '/books/:id', view: showBook },
     ];
 
 const potentialMatches = routes.map(route => {
@@ -53,6 +53,9 @@ const view = new match.route.view(getParams(match));
 
 const app = document.querySelector('#app');
 app.innerHTML = await view.getHtml();
+if (view.afterRender) {
+    await view.afterRender();
+}
 
 };
 
