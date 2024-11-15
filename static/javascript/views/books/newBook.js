@@ -26,55 +26,10 @@ export default class extends boilerplate {
         `;
     }
 
-    //without image logic
-//     async afterRender() { 
-//         document.querySelector('#newBookForm').addEventListener('submit', async (e) => {
-//             console.log('Form submitted');
-//             e.preventDefault();
-
-//             const formData = new FormData(e.target);
-//             const bookData = {
-//                 title: formData.get('title'),
-//                 author: formData.get('author'),
-//                 category: formData.get('category'),
-//                 description: formData.get('description')
-//             };
-
-//             console.log('Submitting book data:', bookData);
-
-//             try {
-//                 const response = await fetch('http://localhost:8080/api/books', {
-//                     method: 'POST',
-//                     headers: {
-//                         'Content-Type': 'application/json'
-//                     },
-//                     body: JSON.stringify(bookData)
-//                 });
-
-//                 console.log('Response status:', response.status);
-
-//                 if (response.ok) {
-//                     alert('Book created successfully!');
-//                     window.history.pushState(null, null, '/books'); 
-//                     window.dispatchEvent(new PopStateEvent('popstate')); 
-//                 } else {
-//                     const errorData = await response.json();
-//                     alert('Failed to create book.');
-//                     console.error('Error response:', errorData);
-//                 }
-//             } catch (error) {
-//                 console.error('Error:', error);
-//                 alert('An error occurred while creating the book.');
-//             }
-//         });
-//     }
-// }
-
-    // With image logic
-    async afterRender() { 
+    async afterRender() {
         const form = document.querySelector('#newBookForm');
         const imagePreview = document.querySelector('#imagePreview');
-
+    
         form.querySelector('input[name="image"]').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -85,41 +40,47 @@ export default class extends boilerplate {
                 };
                 reader.readAsDataURL(file);
             }
-        });    
-        
-document.querySelector('#newBookForm').addEventListener('submit', async (e) => {
-    console.log('Form submitted');
-    e.preventDefault();
-
-    const formData = new FormData(form);
-    const imageFile = form.querySelector('input[name="image"]').files[0];
-    
-    formData.append('image', imageFile);
-    console.log('Form data:', formData);
-
-    try {
-        const response = await fetch('http://localhost:8080/api/books', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "image/jpeg",
-              },
-            body: formData,
         });
+    
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Create a fresh FormData instance
+            const formData = new FormData();
+            
+            // Add each field individually
+            formData.append('title', form.querySelector('[name="title"]').value);
+            formData.append('author', form.querySelector('[name="author"]').value);
+            formData.append('category', form.querySelector('[name="category"]').value);
+            formData.append('description', form.querySelector('[name="description"]').value);
 
-        if (response.ok) {
-            const data = await response.json();
-            console.log('Book created:', data);
-            window.history.pushState(null, null, '/books');
-            window.dispatchEvent(new PopStateEvent('popstate'));
-        } else {
-            const errorData = await response.json();
-            console.error('Server error:', errorData);
-            alert('Failed to create book: ' + (errorData.error || 'Unknown error'));
-        }
-    } catch (error) {
-        console.error('Network error:', error);
-        alert('Network error occurred while creating the book');
+            const imageFile = form.querySelector('[name="image"]').files[0];
+            if (imageFile) {
+                if (imageFile.size > 20 * 1024 * 1024) { // 20MB in bytes
+                    alert('Image file size must be less than 20MB');
+                    return;
+                }
+                formData.append('image', imageFile);
+                console.log('Form data:', formData);
+            }
+
+            try {
+                const response = await fetch('http://localhost:8080/api/books', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.history.pushState(null, null, '/books');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                } else {
+                    const errorResponse = await response.json();
+                    alert(errorResponse?.error || 'Failed to create book');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while creating the book.');
+            }
+        });
     }
-});
-
-    }}
+}    
