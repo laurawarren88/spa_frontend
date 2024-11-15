@@ -6,6 +6,10 @@ import newBook from "../static/javascript/views/books/newBook.js";
 import showBook from "../static/javascript/views/books/showBook.js";
 import deleteBook from "../static/javascript/views/books/deleteBook.js";
 
+import reviews from "../static/javascript/views/reviews/reviews.js";
+import newReview from "../static/javascript/views/reviews/newReview.js";
+import showReviews from "../static/javascript/views/reviews/showReviews.js";
+
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
@@ -22,40 +26,57 @@ const navigateTo = url => {
     router();
 };
 
+
+const homeRoutes = [
+    { path: '/', view: home },
+];
+
+const bookRoutes = [
+    { path: '/books', view: books },
+    { path: '/books/search', view: searchBook },
+    { path: '/books/new', view: newBook },
+    { path: '/books/edit/:id', view: editBook },
+    { path: '/books/delete/:id', view: deleteBook },
+    { path: '/books/:id', view: showBook }
+];
+
+const reviewRoutes = [
+    { path: '/reviews', view: reviews },
+    { path: '/reviews/new/:bookId', view: newReview },
+    { path: '/reviews/:bookId', view: showReviews },
+];
+
 const router = async () => {
     const routes = [
-        { path: '/', view: home },
-        { path: '/books', view: books },
-        { path: '/books/search', view: searchBook },
-        { path: '/books/new', view: newBook },
-        { path: '/books/edit/:id', view: editBook },
-        { path: '/books/delete/:id', view: deleteBook },
-        { path: '/books/:id', view: showBook },
+        ...homeRoutes,
+        ...bookRoutes,
+        ...reviewRoutes
     ];
 
-const potentialMatches = routes.map(route => {
-    return {
-        route: route,
-        result: location.pathname.match(pathToRegex(route.path))
+
+    const potentialMatches = routes.map(route => {
+        return {
+            route: route,
+            result: location.pathname.match(pathToRegex(route.path))
+        };
+    });
+
+    let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
+
+    if (!match) {
+        match = {
+            route: routes[0],
+            result: [location.pathname]
+        };
     };
-});
 
-let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
+    const view = new match.route.view(getParams(match));
 
-if (!match) {
-    match = {
-        route: routes[0],
-        result: [location.pathname]
-    };
-};
-
-const view = new match.route.view(getParams(match));
-
-const app = document.querySelector('#app');
-app.innerHTML = await view.getHtml();
-if (view.afterRender) {
-    await view.afterRender();
-}
+    const app = document.querySelector('#app');
+    app.innerHTML = await view.getHtml();
+    if (view.afterRender) {
+        await view.afterRender();
+    }
 
 };
 

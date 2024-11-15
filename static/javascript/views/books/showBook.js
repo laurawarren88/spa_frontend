@@ -40,6 +40,7 @@ export default class extends boilerplate {
                 </div>
                 
                 <div>
+                    <a href="/reviews/${book.id}" data-link>Leave a Review</a>
                     <a href="/books/edit/${book.id}" data-link>Edit</a>
                     <a href="/books/delete/${book.id}" data-link>Delete</a>
                     <a href="/books" data-link>Back to Books</a>
