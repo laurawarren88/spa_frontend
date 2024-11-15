@@ -8,11 +8,11 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            const response = await fetch('http://localhost:8080/api/reviews');
+            const reviewsResponse = await fetch(`http://localhost:8080/api/reviews/book/${this.bookId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch reviews');
             }
-            const data = await response.json();
+            const data = await reviewsResponse.json();
             const reviews = data.reviews || [];
 
             const reviewsHtml = reviews.length > 0 ? reviews.map(review => `

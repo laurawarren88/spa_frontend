@@ -8,10 +8,7 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            const [bookResponse, reviewsResponse] = await Promise.all([
-                fetch(`http://localhost:8080/api/books/${this.bookId}`),
-                fetch(`http://localhost:8080/api/reviews/book/${this.bookId}`)
-            ]);
+            const reviewsResponse = await fetch(`http://localhost:8080/api/reviews/book/${this.bookId}`);
 
             const bookData = await bookResponse.json();
             const reviewsData = await reviewsResponse.json();
