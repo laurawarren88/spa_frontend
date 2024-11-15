@@ -17,13 +17,20 @@ export default class extends boilerplate {
     
             const booksHtml = books.length > 0 ? books.map(book => `
                 <section class="">
-                    <p>Book Id:${book.id}</p>
+                <div>
+                    <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}">
+                </div>
+                <div>
                     <h3 class="">${book.title}</h3>
                     <p class="">${book.author}</p>
                     <p class="">${book.category}</p>
                     <p class="">${book.description}</p>
+                </div>
+                <div>
                     <a href="/books/${book.id}" data-link>View</a>
                     <a href="/books/edit/${book.id}" data-link>Edit</a>
+                    <a href="/books/delete/${book.id}" data-link>Delete</a>
+                </div>
                 </section>
             `).join('') : '<p>No books available yet. Be the first to add a review!</p>';
     

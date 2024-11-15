@@ -17,7 +17,7 @@ export default class extends boilerplate {
                         <input type="text" name="category" placeholder="Category" required>
                         <textarea name="description" placeholder="Brief description of the book" required></textarea>
                         <input type="file" name="image" accept="image/*" required>
-                        <img id="imagePreview" style="max-width: 200px; display: none;">
+                        <img id="imagePreview" display: none;">
                         <button type="submit" id="submit">Create</button>
                         <a href="/books" data-link>Cancel</a>
                     </form>

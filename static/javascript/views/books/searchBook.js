@@ -52,11 +52,20 @@ export default class extends boilerplate {
                 if (data.books && data.books.length > 0) {
                     resultsDiv.innerHTML = data.books.map(book => `
                         <div class="book-card">
-                            <p>${ this.bookID }</p>
-                            <h3>${book.title}</h3>
-                            <p>Author: ${book.author}</p>
-                            <p>Category: ${book.category}</p>
-                            <a href="/books/${book.id}" data-link>View Details</a>
+                            <div>
+                                <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}">
+                            </div>
+                            <div>
+                                <h3>${book.title}</h3>
+                                <p>Author: ${book.author}</p>
+                                <p>Category: ${book.category}</p>
+                                <p>Description: ${book.description}</p>
+                            </div>
+                            <div>
+                                <a href="/books/${book.id}" data-link>View Details</a>
+                                <a href="/books/edit/${book.id}" data-link>Edit</a>
+                                <a href="/books/delete/${book.id}" data-link>Delete</a>
+                            </div>
                         </div>
                     `).join('');
                 } else {

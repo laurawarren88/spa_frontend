@@ -23,12 +23,19 @@ export default class extends boilerplate {
                 <section class="">
                     <div id="booksContainer">
                         <form id="editBookForm" class="" onsubmit="return false">
+                        <div>
+                            <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}">
+                        </div>
+                        <div>
                             <input type="text" name="title" value="${book.title}" placeholder="Title" required>
                             <input type="text" name="author" value="${book.author}" placeholder="Author" required>
                             <input type="text" name="category" value="${book.category}" placeholder="Category" required>
                             <textarea name="description" placeholder="Brief description of the book" required>${book.description}</textarea>
+                        </div>
+                        <div>
                             <button type="submit" id="submit">Update</button>
                             <a href="/books" data-link>Cancel</a>
+                        </div>
                         </form>
                     </div>
                 </section>

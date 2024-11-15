@@ -25,15 +25,25 @@ export default class extends boilerplate {
             const book = await response.json();
 
 
+
             return `
             <h1>Show Book Page</h1>
             <div id="booksContainer">
-                <h3>${book.title}</h3>
-                <p>${book.author}</p>
-                <p>${book.category}</p>
-                <p>${book.description}</p>
-                <a href="/books/edit/${book.id}" data-link>Edit</a>
-                <a href="/books/delete/${book.id}" data-link>Delete</a>
+                <div>
+                    <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}">
+                </div>
+                <div>
+                    <h3>${book.title}</h3>
+                    <p>${book.author}</p>
+                    <p>${book.category}</p>
+                    <p>${book.description}</p>
+                </div>
+                
+                <div>
+                    <a href="/books/edit/${book.id}" data-link>Edit</a>
+                    <a href="/books/delete/${book.id}" data-link>Delete</a>
+                    <a href="/books" data-link>Back to Books</a>
+                </div>
             </div>
             `;
         } catch (error) {
