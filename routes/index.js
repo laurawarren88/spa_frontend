@@ -42,8 +42,8 @@ const bookRoutes = [
 
 const reviewRoutes = [
     { path: '/reviews', view: reviews },
-    { path: '/reviews/new/:bookId', view: newReview },
-    { path: '/reviews/:bookId', view: showReviews },
+    { path: '/reviews/:bookId', view: newReview },
+    { path: '/reviews/book/:bookId', view: showReviews },
 ];
 
 const router = async () => {

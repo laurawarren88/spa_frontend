@@ -10,46 +10,31 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            console.log('Fetching book with ID:', this.bookId);
-            
-            if (!this.bookId) {
-                throw new Error('Book ID is required');
-            }
-
-            const response = await fetch(`http://localhost:8080/api/books/${this.bookId}`);
-
+            const response = await fetch(`http://localhost:8080/api/reviews/book/${this.params.id}`);
             if (!response.ok) {
-                throw new Error('Failed to fetch book');
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
     
-            const book = await response.json();
-
-
-
+            const data = await response.json();
+            const reviews = data.reviews || [];
+            console.log('Fetched reviews:', reviews);
+    
+            const reviewsHtml = reviews.length > 0
+                ? reviews.map(review => `
+                    <div class="review-card">
+                        <h3>${review.bookTitle}</h3>
+                        <p>${review.review}</p>
+                    </div>
+                `).join('')
+                : '<p>No reviews found for this book.</p>';
+    
             return `
-            <h1>Show Book Page</h1>
-            <div id="booksContainer">
-                <div>
-                    <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}">
-                </div>
-                <div>
-                    <h3>${book.title}</h3>
-                    <p>${book.author}</p>
-                    <p>${book.category}</p>
-                    <p>${book.description}</p>
-                </div>
-                
-                <div>
-                    <a href="/reviews/${book.id}" data-link>Leave a Review</a>
-                    <a href="/books/edit/${book.id}" data-link>Edit</a>
-                    <a href="/books/delete/${book.id}" data-link>Delete</a>
-                    <a href="/books" data-link>Back to Books</a>
-                </div>
-            </div>
+                <h1>Reviews for Book</h1>
+                <div>${reviewsHtml}</div>
             `;
         } catch (error) {
-            console.log('Response error:', error);
-            return '<h1>Couldn\'t get the book details</h1>';
+            console.error('Error fetching reviews:', error);
+            return '<h1>Error loading reviews</h1>';
         }
     }
 }
