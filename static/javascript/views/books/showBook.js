@@ -10,31 +10,35 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            const response = await fetch(`http://localhost:8080/api/reviews/book/${this.params.id}`);
+            console.log('Fetching book with ID:', this.bookId);
+
+            if (!this.bookId) {
+                throw new Error('Book ID is required');
+            }
+
+            const response = await fetch(`http://localhost:8080/api/books/${this.bookId}`);
+
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error('Failed to fetch book');
             }
     
-            const data = await response.json();
-            const reviews = data.reviews || [];
-            console.log('Fetched reviews:', reviews);
-    
-            const reviewsHtml = reviews.length > 0
-                ? reviews.map(review => `
-                    <div class="review-card">
-                        <h3>${review.bookTitle}</h3>
-                        <p>${review.review}</p>
-                    </div>
-                `).join('')
-                : '<p>No reviews found for this book.</p>';
+            const book = await response.json();
     
             return `
-                <h1>Reviews for Book</h1>
-                <div>${reviewsHtml}</div>
+                <h1>Book Page for ${this.params.id}</h1>
+                <div id="booksContainer">
+                    <h2>${book.title}</h2>
+                    <p>${book.author}</p>
+                    <p>${book.category}</p>
+                    <p>${book.description}</p>
+                </div>
+                <a href="/books/edit/${this.bookId}" data-link>Edit</a>
+                <a href="/books/delete/${this.bookId}" data-link>Delete</a>
+                <a href="/reviews/new/${this.bookId}" data-link>Leave a Review</a>
             `;
         } catch (error) {
-            console.error('Error fetching reviews:', error);
-            return '<h1>Error loading reviews</h1>';
+            console.error('Error:', error);
+            return '<h1>Failed to load book details</h1>';
         }
     }
 }

@@ -4,7 +4,6 @@ export default class extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Home");
-        this.searchResults = [];
     }
 
     async getHtml() {
@@ -29,7 +28,7 @@ export default class extends boilerplate {
                 </div>
                 <div>
                     <a href="/books/${book.id}" data-link>View</a>
-                    <a href="/reviews/${book.id}" data-link>Leave a Review</a>
+                    <a href="/reviews/new/${book.id}" data-link>Leave a Review</a>
                     <a href="/books/edit/${book.id}" data-link>Edit</a>
                     <a href="/books/delete/${book.id}" data-link>Delete</a>
                 </div>
@@ -104,7 +103,7 @@ export default class extends boilerplate {
                                   </div>
                                 <div>
                                     <a href="/books/${book.id}" data-link>View</a>
-                                    <a href="/reviews/${book.id}" data-link>Leave a Review</a>
+                                    <a href="/reviews/new/${book.id}" data-link>Leave a Review</a>
                                     <a href="/books/edit/${book.id}" data-link>Edit</a>
                                     <a href="/books/delete/${book.id}" data-link>Delete</a>
                                 </div>

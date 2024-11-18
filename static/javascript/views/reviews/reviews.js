@@ -4,30 +4,35 @@ export default class extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Reviews");
+        this.bookId = params.bookId;
     }
 
     async getHtml() {
         try {
-            const reviewsResponse = await fetch(`http://localhost:8080/api/reviews`);
-            if (!reviewsResponse.ok) {
-                throw new Error(`HTTP error! Status: ${reviewsResponse.status}`);
+            const response = await fetch(`http://localhost:8080/api/reviews`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            const data = await reviewsResponse.json();
+
+            const data = await response.json();
+            console.log('Fetched data:', data);
             const reviews = data.reviews || [];
-            console.log('Fetched review:', data);
+            console.log('Fetched review:', reviews);
 
             const reviewsHtml = reviews.length > 0 ? reviews.map(review => `
-                <div class="review-card">
-                    <div class="review-header">
-                        <h3>${review.book_title}</h3>
-                        <div class="rating">
+                <div class="">
+                    <div class="">
+                    <p>${review.book.title}</p>
+                        <div class="">
                             ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
                         </div>
                     </div>
-                    <p class="review-text">${review.review}</p>
-                    <div class="review-footer">
-                        <span class="review-date">${new Date(review.created_at).toLocaleDateString()}</span>
-                        <div class="review-actions">
+                    <p class="">${review.review}</p>
+                    <div class="">
+                        <span class="">${new Date(review.created_at).toLocaleDateString()}</span>
+                        <div class="">
+                            <a href="/reviews/book/${review.book.id}" data-link>View all reviews for this book</a>
+                            <a href="/reviews/${review.id}" data-link>Expand this review</a>
                             <a href="/reviews/edit/${review.id}" data-link>Edit</a>
                             <a href="/reviews/delete/${review.id}" data-link>Delete</a>
                         </div>
@@ -36,8 +41,8 @@ export default class extends boilerplate {
             `).join('') : '<p>No reviews yet.</p>';
 
             return `
-                <h1 class="main_heading">Reviews</h1>
-                <div class="reviews-container">
+                <h1 class="">Reviews</h1>
+                <div class="">
                     ${reviewsHtml}
                 </div>
             `;

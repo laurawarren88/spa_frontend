@@ -9,22 +9,34 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            const bookResponse = await fetch(`http://localhost:8080/api/books/${this.bookId}`);
-            const bookData = await bookResponse.json();
+            const bookResponse = await fetch(`http://localhost:8080/api/reviews/new/${this.bookId}`);
+            const responseData = await bookResponse.json();
+
+            // Check if the response contains the book data
+            const bookData = responseData.book;
+
+            if (!bookData) {
+                console.error("Book data is missing:", responseData);
+                throw new Error("Failed to fetch book data");
+            }
+
+            console.log('Book Data:', this.params);
+            console.log('Book ID:', this.bookId);
+            console.log('Book Title:', bookData.title);
 
             return `
-                <h1 class="main_heading">Review for ${bookData.title}</h1>
-                <form id="reviewForm" class="review-form">
-                    <div class="form-group">
+                <h1 class="">Review for ${bookData.title}</h1>
+                <form id="reviewForm" class="">
+                    <div class="">
                         <label for="rating">Rating:</label>
-                        <div class="star-rating">
+                        <div class="">
                             ${[1,2,3,4,5].map(num => `
-                                <input type="radio" id="star${num}" name="rating" value="${num}">
+                                <input type="radio" id="star${num}" name="rating" value="${num}" required>
                                 <label for="star${num}">★</label>
                             `).join('')}
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="">
                         <label for="review">Your Review:</label>
                         <textarea id="review" name="review" required></textarea>
                     </div>
@@ -57,12 +69,15 @@ export default class extends boilerplate {
                 });
 
                 if (response.ok) {
-                    window.location.href = `/books/${this.bookId}`;
+                    window.history.pushState(null, null, '/reviews');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
                 } else {
-                    throw new Error('Failed to submit review');
+                    const errorResponse = await response.json();
+                    alert(errorResponse?.error || 'Failed to create review');
                 }
             } catch (error) {
                 console.error('Error:', error);
+                alert('An error occurred while creating the review.');
             }
         });
     }

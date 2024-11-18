@@ -9,6 +9,7 @@ import deleteBook from "../static/javascript/views/books/deleteBook.js";
 import reviews from "../static/javascript/views/reviews/reviews.js";
 import newReview from "../static/javascript/views/reviews/newReview.js";
 import showReviews from "../static/javascript/views/reviews/showReviews.js";
+import singleReview from "../static/javascript/views/reviews/singleReview.js";
 
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
@@ -42,8 +43,9 @@ const bookRoutes = [
 
 const reviewRoutes = [
     { path: '/reviews', view: reviews },
-    { path: '/reviews/:bookId', view: newReview },
+    { path: '/reviews/new/:bookId', view: newReview },
     { path: '/reviews/book/:bookId', view: showReviews },
+    { path: '/reviews/:reviewId', view: singleReview},
 ];
 
 const router = async () => {
@@ -77,7 +79,6 @@ const router = async () => {
     if (view.afterRender) {
         await view.afterRender();
     }
-
 };
 
 window.addEventListener('popstate', router);
