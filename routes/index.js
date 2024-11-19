@@ -10,6 +10,8 @@ import reviews from "../static/javascript/views/reviews/reviews.js";
 import newReview from "../static/javascript/views/reviews/newReview.js";
 import showReviews from "../static/javascript/views/reviews/showReviews.js";
 import singleReview from "../static/javascript/views/reviews/singleReview.js";
+import editReview from "../static/javascript/views/reviews/editReview.js";
+import deleteReview from "../static/javascript/views/reviews/deleteReview.js";
 
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
@@ -45,6 +47,8 @@ const reviewRoutes = [
     { path: '/reviews', view: reviews },
     { path: '/reviews/new/:bookId', view: newReview },
     { path: '/reviews/book/:bookId', view: showReviews },
+    { path: '/reviews/edit/:reviewId', view: editReview },
+    { path: '/reviews/delete/:reviewId', view: deleteReview },
     { path: '/reviews/:reviewId', view: singleReview},
 ];
 
