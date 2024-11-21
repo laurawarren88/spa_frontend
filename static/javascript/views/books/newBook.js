@@ -45,10 +45,8 @@ export default class extends boilerplate {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Create a fresh FormData instance
             const formData = new FormData();
             
-            // Add each field individually
             formData.append('title', form.querySelector('[name="title"]').value);
             formData.append('author', form.querySelector('[name="author"]').value);
             formData.append('category', form.querySelector('[name="category"]').value);

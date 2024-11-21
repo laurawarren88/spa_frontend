@@ -1,4 +1,6 @@
 import home from "../static/javascript/views/home.js";
+import profile from "../static/javascript/views/profile.js";
+
 import books from "../static/javascript/views/books/books.js";
 import searchBook from "../static/javascript/views/books/searchBook.js";
 import editBook from "../static/javascript/views/books/editBook.js";
@@ -13,6 +15,10 @@ import singleReview from "../static/javascript/views/reviews/singleReview.js";
 import editReview from "../static/javascript/views/reviews/editReview.js";
 import deleteReview from "../static/javascript/views/reviews/deleteReview.js";
 
+import login from "../static/javascript/views/users/login.js";
+import register from "../static/javascript/views/users/register.js";
+import forgotPassword from "../static/javascript/views/users/forgotPassword.js";
+import logout from "../static/javascript/views/users/logout.js";
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
@@ -32,6 +38,7 @@ const navigateTo = url => {
 
 const homeRoutes = [
     { path: '/', view: home },
+    { path: '/profile', view: profile },
 ];
 
 const bookRoutes = [
@@ -52,11 +59,19 @@ const reviewRoutes = [
     { path: '/reviews/:reviewId', view: singleReview},
 ];
 
+const userRoutes = [
+    { path: '/users/login', view: login },
+    { path: '/users/register', view: register },
+    { path: '/users/forgot-password', view: forgotPassword },
+    { path: '/users/logout', view: logout },
+];
+
 const router = async () => {
     const routes = [
         ...homeRoutes,
         ...bookRoutes,
-        ...reviewRoutes
+        ...reviewRoutes,
+        ...userRoutes,
     ];
 
 

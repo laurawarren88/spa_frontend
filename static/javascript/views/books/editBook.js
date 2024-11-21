@@ -10,11 +10,32 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            const response = await fetch(`http://localhost:8080/api/books/edit/${this.bookId}`);
+            const token = document.cookie ? document.cookie
+            .split('; ')
+            .find(row => row.startsWith('token='))
+            ?.split('=')[1] : null;
+
+            if (!token) {
+                console.error('Token not found in cookies.');
+                return '<h1>Please login to edit books</h1>';
+            }
+
+            console.log('Cookies:', document.cookie);
+
+            const response = await fetch(`http://localhost:8080/api/books/edit/${this.bookId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                credentials: 'include',
+            });
 
             if (!response.ok) {
                 throw new Error('Failed to fetch book');
             }
+
+            console.log('Cookies:', document.cookie);
             
             const book = await response.json();
 
@@ -48,10 +69,28 @@ export default class extends boilerplate {
         
     async afterRender() {
         const form = document.getElementById('editBookForm');
+
+        if (!form) {
+            console.error('Edit form not found');
+            return;
+        }
         
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            const token = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('token='))
+            ?.split('=')[1];
+    
+            if (!token) {
+                console.error('Token not found in cookies.');
+                alert('Please login to update the book.');
+                return;
+            }
+
+            console.log('Cookie:', document.cookie);
+
             const formData = new FormData(form);
             const bookData = {
                 title: formData.get('title'),
@@ -64,11 +103,17 @@ export default class extends boilerplate {
                 const response = await fetch(`http://localhost:8080/api/books/edit/${this.bookId}`, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
                     },
+                    credentials: 'include',
                     body: JSON.stringify(bookData)
                 });
     
+                if (response.status === 401) {
+                    window.location.href = '/user/login';
+                    return;
+                }
                 if (response.ok) {
                     window.history.pushState(null, null, `/books/${this.bookId}`);
                     window.dispatchEvent(new PopStateEvent('popstate'));

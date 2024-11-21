@@ -12,7 +12,6 @@ export default class extends boilerplate {
             const bookResponse = await fetch(`http://localhost:8080/api/reviews/new/${this.bookId}`);
             const responseData = await bookResponse.json();
 
-            // Check if the response contains the book data
             const bookData = responseData.book;
 
             if (!bookData) {
@@ -20,9 +19,10 @@ export default class extends boilerplate {
                 throw new Error("Failed to fetch book data");
             }
 
-            console.log('Book Data:', this.params);
-            console.log('Book ID:', this.bookId);
-            console.log('Book Title:', bookData.title);
+            // ** Uncomment for debugging **
+            // console.log('Book Data:', this.params);
+            // console.log('Book ID:', this.bookId);
+            // console.log('Book Title:', bookData.title);
 
             return `
                 <h1 class="">Review for ${bookData.title}</h1>
