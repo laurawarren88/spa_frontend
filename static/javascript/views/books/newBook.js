@@ -1,12 +1,23 @@
 import boilerplate from "../boilerplate.js";
+import { fetchToken } from "../../../../utils/fetchToken.js";
+import { requireAuth } from "../../../../utils/authCheck.js";
 
-export default class extends boilerplate {
+class NewBook extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Add a New Book");
     }
 
     async getHtml() {
+        try {
+            const response = await fetchToken('http://localhost:8080/api/books/new', {
+                method: 'GET',
+            });
+
+            if (!response.ok) {
+                return '<h1>Please login to add a new book</h1>';
+            }
+
         return `
             <h1 class="">Add a New Book</h1>
             <section class="">
@@ -24,7 +35,11 @@ export default class extends boilerplate {
                 </div>
             </section>
         `;
+    } catch (error) {
+        console.error('Error:', error);
+        return '<h1>Failed to load book details</h1>';
     }
+}
 
     async afterRender() {
         const form = document.querySelector('#newBookForm');
@@ -63,7 +78,7 @@ export default class extends boilerplate {
             }
 
             try {
-                const response = await fetch('http://localhost:8080/api/books', {
+                const response = await fetchToken('http://localhost:8080/api/books', {
                     method: 'POST',
                     body: formData
                 });
@@ -81,4 +96,5 @@ export default class extends boilerplate {
             }
         });
     }
-}    
+}   
+export default NewBook; 

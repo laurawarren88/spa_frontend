@@ -1,41 +1,32 @@
 import boilerplate from "../boilerplate.js";
+import { fetchToken } from "../../../../utils/fetchToken.js";
 
-export default class extends boilerplate {
+class EditBook extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Edit the Book");
-        console.log('Params received:', params);
+        // console.log('Params received:', params);
         this.bookId = params.id;
     }
 
     async getHtml() {
         try {
-            const token = document.cookie ? document.cookie
+            const token = document.cookie
             .split('; ')
             .find(row => row.startsWith('token='))
-            ?.split('=')[1] : null;
+            ?.split('=')[1];
 
-            if (!token) {
-                console.error('Token not found in cookies.');
-                return '<h1>Please login to edit books</h1>';
-            }
-
-            console.log('Cookies:', document.cookie);
-
-            const response = await fetch(`http://localhost:8080/api/books/edit/${this.bookId}`, {
+           if (!token) {
+               return `
+                   <div class="auth-error">
+                       <h2>Authentication Required</h2>
+                       <p>Please <a href="/users/login" data-link>login</a> to edit books.</p>
+                   </div>
+               `;
+           }
+            const response = await fetchToken(`http://localhost:8080/api/books/edit/${this.bookId}`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                credentials: 'include',
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch book');
-            }
-
-            console.log('Cookies:', document.cookie);
             
             const book = await response.json();
 
@@ -62,7 +53,14 @@ export default class extends boilerplate {
                 </section>
             `;
         } catch (error) {
-            console.error('Error:', error);
+            if (error.message.includes('Please log in')) {
+                return `
+                    <div class="auth-error">
+                        <h2>Authentication Required</h2>
+                        <p>Please <a href="/users/login" data-link>login</a> to edit books.</p>
+                    </div>
+                `;
+            }
             return '<h1>Failed to load book details</h1>';
         }
     }
@@ -77,19 +75,6 @@ export default class extends boilerplate {
         
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const token = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('token='))
-            ?.split('=')[1];
-    
-            if (!token) {
-                console.error('Token not found in cookies.');
-                alert('Please login to update the book.');
-                return;
-            }
-
-            console.log('Cookie:', document.cookie);
 
             const formData = new FormData(form);
             const bookData = {
@@ -100,13 +85,8 @@ export default class extends boilerplate {
             };
     
             try {
-                const response = await fetch(`http://localhost:8080/api/books/edit/${this.bookId}`, {
+                const response = await fetchToken(`http://localhost:8080/api/books/edit/${this.bookId}`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    credentials: 'include',
                     body: JSON.stringify(bookData)
                 });
     
@@ -129,3 +109,5 @@ export default class extends boilerplate {
         });
     }
 }    
+
+export default EditBook;

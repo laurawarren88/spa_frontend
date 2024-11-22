@@ -1,6 +1,7 @@
 import boilerplate from "./boilerplate.js";
+import { fetchToken } from "../../../utils/fetchToken.js";
 
-export default class extends boilerplate {
+class Profile extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Profile");
@@ -8,41 +9,20 @@ export default class extends boilerplate {
     }
 
     async getHtml() {
-        try {
-            // console.log("Profile Cookie:", document.cookie)
-
-            const token = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('token='))
-            ?.split('=')[1];
-    
-            if (!token) {
-                console.error('Token not found in cookies.');
-                alert('Please login to update the book.');
-                return;
-            }
-
-            // console.log('Cookie:', token);
-
-            if (!token) {
-                console.error('Token not found in cookies.');
-                return '<h1>Please login to view your profile</h1>';
-            }
-    
-            const response = await fetch(`http://localhost:8080/api/profile`, {
+        try {    
+            const response = await fetchToken(`http://localhost:8080/api/profile`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                credentials: 'include',
             });
     
             if (!response.ok) {
-                throw new Error('Failed to fetch profile');
+                return '<h1>Please login to view your profile</h1>';
+                // throw new Error('Failed to fetch profile');
             }
+
+             // console.log('Cookie:', token);
     
             const user = await response.json();
+
             return `
                 <h1>Profile</h1>
                 <section>
@@ -58,3 +38,5 @@ export default class extends boilerplate {
         }
     }
 }
+
+export default Profile;

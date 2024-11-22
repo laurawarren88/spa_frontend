@@ -1,6 +1,7 @@
 import boilerplate from "../boilerplate.js";
+import { fetchToken } from "../../../../utils/fetchToken.js";
 
-export default class extends boilerplate {
+class NewReview extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Add Review");
@@ -9,7 +10,7 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            const bookResponse = await fetch(`http://localhost:8080/api/reviews/new/${this.bookId}`);
+            const bookResponse = await fetchToken(`http://localhost:8080/api/reviews/new/${this.bookId}`);
             const responseData = await bookResponse.json();
 
             const bookData = responseData.book;
@@ -56,7 +57,7 @@ export default class extends boilerplate {
             const formData = new FormData(form);
             
             try {
-                const response = await fetch('http://localhost:8080/api/reviews', {
+                const response = await fetchToken('http://localhost:8080/api/reviews', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -82,3 +83,5 @@ export default class extends boilerplate {
         });
     }
 }
+
+export default NewReview;

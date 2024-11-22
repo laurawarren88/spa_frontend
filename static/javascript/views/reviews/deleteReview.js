@@ -1,15 +1,15 @@
 import boilerplate from "../boilerplate.js";
-
-export default class extends boilerplate {
+import { fetchToken } from "../../../../utils/fetchToken.js";
+class DeleteReview extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Delete Review");
         this.reviewId = params.reviewId;
-    }
+    }  
     
     async getHtml() {
         try {
-            const response = await fetch(`http://localhost:8080/api/reviews/delete/${this.reviewId}`, {
+            const response = await fetchToken(`http://localhost:8080/api/reviews/delete/${this.reviewId}`, {
                 method: 'DELETE'
             });
 
@@ -26,3 +26,5 @@ export default class extends boilerplate {
         }
     }
 }
+
+export default DeleteReview; 

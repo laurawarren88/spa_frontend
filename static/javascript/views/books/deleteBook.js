@@ -1,15 +1,18 @@
 import boilerplate from "../boilerplate.js";
+import { fetchToken } from "../../../../utils/fetchToken.js";
 
-export default class extends boilerplate {
+
+class DeleteBook extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Delete Book");
         this.bookId = params.id;
-    }
+}
 
     async getHtml() {
         try {
-            const response = await fetch(`http://localhost:8080/api/books/delete/${this.bookId}`, {
+            // Link the route with the authorisation and cookie 
+            const response = await fetchToken(`http://localhost:8080/api/books/delete/${this.bookId}`, {
                 method: 'DELETE'
             });
 
@@ -26,3 +29,5 @@ export default class extends boilerplate {
         }
     }
 }
+
+export default DeleteBook;

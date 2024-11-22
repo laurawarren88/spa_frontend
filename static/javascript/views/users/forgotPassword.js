@@ -1,4 +1,5 @@
 import boilerplate from "../boilerplate.js";
+import { fetchToken } from "../../../../utils/fetchToken.js";
 
 export default class extends boilerplate {
     constructor(params) {
@@ -9,7 +10,7 @@ export default class extends boilerplate {
 
 async getHtml() {
     try {
-        const userResponse = await fetch(`http://localhost:8080/api/users/login`);
+        const userResponse = await fetchToken(`http://localhost:8080/api/users/reset-password`);
         const responseData = await userResponse.json();
 
         const userData = responseData.user;
@@ -44,7 +45,7 @@ async getHtml() {
             const formData = new FormData(form);
             
             try {
-                const response = await fetch('http://localhost:8080/api/users/forgot-password', {
+                const response = await fetchToken('http://localhost:8080/api/users/reset-password', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

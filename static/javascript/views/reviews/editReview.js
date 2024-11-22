@@ -1,6 +1,7 @@
 import boilerplate from "../boilerplate.js";
+import { fetchToken } from "../../../../utils/fetchToken.js";
 
-export default class extends boilerplate {
+class EditReview extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Edit Review");
@@ -9,7 +10,7 @@ export default class extends boilerplate {
 
 async getHtml() {
     try {
-        const response = await fetch(`http://localhost:8080/api/reviews/edit/${this.reviewId}`);
+        const response = await fetchToken(`http://localhost:8080/api/reviews/edit/${this.reviewId}`);
 
         if (!response.ok) {
             throw new Error('Failed to fetch review details');
@@ -57,7 +58,7 @@ async getHtml() {
             };
 
             try {
-                const response = await fetch(`http://localhost:8080/api/reviews/edit/${this.reviewId}`, {
+                const response = await fetchToken(`http://localhost:8080/api/reviews/edit/${this.reviewId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -78,3 +79,5 @@ async getHtml() {
         });
     }
 }
+
+export default EditReview;
