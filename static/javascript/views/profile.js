@@ -9,32 +9,28 @@ class Profile extends boilerplate {
     }
 
     async getHtml() {
-        try {    
-            const response = await fetchToken(`http://localhost:8080/api/profile`, {
-                method: 'GET',
+        try {
+            const response = await fetch(`http://localhost:8080/api/profile`, {
+                headers: {
+                    'Authorization': `Bearer ${document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]}`
+                },
+                credentials: 'include'
             });
-    
-            if (!response.ok) {
-                return '<h1>Please login to view your profile</h1>';
-                // throw new Error('Failed to fetch profile');
-            }
 
-             // console.log('Cookie:', token);
-    
             const user = await response.json();
-
+            
             return `
                 <h1>Profile</h1>
                 <section>
                     <div id="profileContainer">
                         <p>Welcome, ${user.username}</p>
                         <p>Email: ${user.email}</p>
+                        ${user.isAdmin ? '<p>Admin Status: Active</p>' : ''}
                     </div>
                 </section>
             `;
         } catch (error) {
-            console.error('Error fetching profile:', error);
-            return '<h1>Failed to load profile. Please try again later.</h1>';
+            return '<h1>Error loading profile. Please try again.</h1>';
         }
     }
 }

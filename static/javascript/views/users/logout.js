@@ -18,7 +18,7 @@ class Logout extends boilerplate {
             
             if (response.ok) {
                 document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost; samesite=lax";
-                window.history.pushState(null, null, `/profile`);
+                window.history.pushState(null, null, `/`);
                 window.dispatchEvent(new PopStateEvent('popstate'));
             } else {
                 const errorResponse = await response.json();

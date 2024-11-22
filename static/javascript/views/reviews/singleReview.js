@@ -9,19 +9,24 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            console.log('Fetching review with ID:', this.reviewId);
+            // console.log('Fetching review with ID:', this.reviewId);
     
-            if (!this.reviewId) {
-                throw new Error('Review ID is required');
-            }
+            // if (!this.reviewId) {
+            //     throw new Error('Review ID is required');
+            // }
     
             const response = await fetch(`http://localhost:8080/api/reviews/${this.reviewId}`);
+            
             if (!response.ok) {
                 throw new Error(`Failed to fetch review ${response.status}`);
             }
+
+            const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+            const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
+            const isAdmin = payload?.isAdmin || false;
     
             const review = await response.json();
-            console.log('Fetched data:', review);
+            // console.log('Fetched data:', review);
     
             return `
                 <div class="">
@@ -38,8 +43,8 @@ export default class extends boilerplate {
                     </div>
                     <div class="review-actions">                        
                         <a href="/reviews/book/${review.book.id}" data-link>Back to Book Reviews</a>
-                        <a href="/reviews/edit/${review.id}" data-link>Edit Review</a>
-                        <a href="/reviews/delete/${review.id}" data-link>Delete</a>
+                        ${isAdmin ? `<a href="/reviews/edit/${review.id}" data-link>Edit Review</a>` : ''}
+                        ${isAdmin ? `<a href="/reviews/delete/${review.id}" data-link>Delete</a>` : ''}
                     </div>
                 </div>
             `;

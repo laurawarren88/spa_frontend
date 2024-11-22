@@ -24,20 +24,21 @@ export async function fetchToken(url, options = {}) {
         defaultOptions.headers['Content-Type'] = 'application/json';
     }
 
-    const requestOptions = {
+    const response = await fetch(url, {
         ...defaultOptions,
         ...options,
         headers: {
             ...defaultOptions.headers,
             ...options.headers,
         },
-    };
+    });
 
-    const response = await fetch(url, requestOptions);
-
-    if (response.status === 401) {
-        window.location.href = '/user/login';
-        throw new Error('Unauthorized. Redirecting to login.');
+    if (!response.ok) {
+        const errorData = await response.json();
+        if (response.status === 403) {
+            throw new Error('Admin access required');
+        }
+        throw new Error(errorData.error || 'Request failed');
     }
 
     return response;

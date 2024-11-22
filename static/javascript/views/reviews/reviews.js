@@ -13,11 +13,14 @@ export default class extends boilerplate {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
+            const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+            const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
+            const isAdmin = payload?.isAdmin || false;
 
             const data = await response.json();
-            console.log('Fetched data:', data);
+            // console.log('Fetched data:', data);
             const reviews = data.reviews || [];
-            console.log('Fetched review:', reviews);
+            // console.log('Fetched review:', reviews);
 
             const reviewsHtml = reviews.length > 0 ? reviews.map(review => `
                 <div class="">
@@ -33,8 +36,8 @@ export default class extends boilerplate {
                         <div class="">
                             <a href="/reviews/book/${review.book.id}" data-link>View all reviews for this book</a>
                             <a href="/reviews/${review.id}" data-link>Expand this review</a>
-                            <a href="/reviews/edit/${review.id}" data-link>Edit</a>
-                            <a href="/reviews/delete/${review.id}" data-link>Delete</a>
+                            ${isAdmin ? `<a href="/reviews/edit/${review.id}" data-link>Edit</a>` : ''}
+                            ${isAdmin ? `<a href="/reviews/delete/${review.id}" data-link>Delete</a>` : ''}
                         </div>
                     </div>
                 </div>

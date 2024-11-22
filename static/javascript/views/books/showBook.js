@@ -4,13 +4,13 @@ export default class extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Book Details");
-        console.log('Params received:', params);
+        // console.log('Params received:', params);
         this.bookId = params.id;
     }
 
     async getHtml() {
         try {
-            console.log('Fetching book with ID:', this.bookId);
+            // console.log('Fetching book with ID:', this.bookId);
 
             if (!this.bookId) {
                 throw new Error('Book ID is required');
@@ -21,20 +21,23 @@ export default class extends boilerplate {
             if (!response.ok) {
                 throw new Error('Failed to fetch book');
             }
+
+            const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+            const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
+            const isAdmin = payload?.isAdmin || false;
     
             const book = await response.json();
     
             return `
-                <h1>Book Page for ${this.params.id}</h1>
                 <div id="booksContainer">
                     <h2>${book.title}</h2>
                     <p>${book.author}</p>
                     <p>${book.category}</p>
                     <p>${book.description}</p>
                 </div>
-                <a href="/books/edit/${this.bookId}" data-link>Edit</a>
-                <a href="/books/delete/${this.bookId}" data-link>Delete</a>
-                <a href="/reviews/new/${this.bookId}" data-link>Leave a Review</a>
+                ${token ? `<a href="/reviews/new/${this.bookId}" data-link>Leave a Review</a>` : ''}
+                ${isAdmin ? `<a href="/books/edit/${this.bookId}" data-link>Edit</a>` : ''}
+                ${isAdmin ? `<a href="/books/delete/${this.bookId}" data-link>Delete</a>` : ''}
             `;
         } catch (error) {
             console.error('Error:', error);

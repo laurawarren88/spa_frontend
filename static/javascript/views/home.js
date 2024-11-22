@@ -12,6 +12,11 @@ export default class extends boilerplate {
             if (!response.ok) {
                 throw new Error('Failed to fetch books');
             }
+
+            const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+            const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
+            const isAdmin = payload?.isAdmin || false;
+            
             const data = await response.json();
             const books = data.books || [];
     
@@ -28,9 +33,9 @@ export default class extends boilerplate {
                 </div>
                 <div>
                     <a href="/books/${book.id}" data-link>View</a>
-                    <a href="/reviews/new/${book.id}" data-link>Leave a Review</a>
-                    <a href="/books/edit/${book.id}" data-link>Edit</a>
-                    <a href="/books/delete/${book.id}" data-link>Delete</a>
+                    ${token ? `<a href="/reviews/new/${book.id}" data-link>Leave a Review</a>` : ''}
+                    ${isAdmin ? `<a href="/books/edit/${book.id}" data-link>Edit</a>` : ''}
+                    ${isAdmin ? `<a href="/books/delete/${book.id}" data-link>Delete</a>` : ''}
                 </div>
                 </section>
             `).join('') : '<p>No books available yet. Be the first to add a review!</p>';

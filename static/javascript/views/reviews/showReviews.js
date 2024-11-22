@@ -9,17 +9,20 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            console.log('Fetching book with ID:', this.bookId);
+            // console.log('Fetching book with ID:', this.bookId);
 
-            if (!this.bookId) {
-                throw new Error('Book ID is required');
-            }
+            // if (!this.bookId) {
+            //     throw new Error('Book ID is required');
+            // }
 
             const response = await fetch(`http://localhost:8080/api/reviews/book/${this.bookId}`);
 
             if (!response.ok) {
                 throw new Error(`Failed to fetch reviews for book: ${response.status}`);
             }
+
+            const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+            const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
 
             const data = await response.json();
             console.log('Fetched data:', data);
@@ -31,7 +34,7 @@ export default class extends boilerplate {
                     <div class="">
                         <h1 class="">Reviews for ${bookTitle || 'Unknown Book'}</h1>
                         <p>No reviews yet for this book.</p>
-                        <a href="/reviews/new/${this.bookId}" class="" data-link>Add Your Review</a>
+                        ${token ? `<a href="/reviews/new/${this.bookId}" class="" data-link>Add Your Review</a>` : ''}
                     </div>
                 `;
             }
@@ -45,7 +48,7 @@ export default class extends boilerplate {
                     <span>Average Rating: ${averageRating.toFixed(1)}</span>
                     <div class="">${'★'.repeat(Math.round(averageRating))}${'☆'.repeat(5 - Math.round(averageRating))}</div>
                 </div>
-                     <a href="/reviews/new/${this.bookId}" class="" data-link>Add Your Review</a>
+                     ${token ? `<a href="/reviews/new/${this.bookId}" class="" data-link>Add Your Review</a>` : ''}
                 <div class="">
                     ${this.renderReviews(reviews)}
                 </div>
@@ -58,6 +61,10 @@ export default class extends boilerplate {
     }
 
     renderReviews(reviews) {
+        const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+        const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
+        const isAdmin = payload?.isAdmin || false;
+
         return reviews.length ? reviews.map(review => `
             <div class="">
                 <div class="">
@@ -66,8 +73,8 @@ export default class extends boilerplate {
                 </div>
                 <p class="">${review.review}</p>
                     <a href="/reviews/${review.id}" data-link>Expand this review</a>
-                    <a href="/reviews/edit/${review.id}" data-link>Edit</a>
-                    <a href="/reviews/delete/${review.id}" data-link>Delete</a>
+                    ${isAdmin ? `<a href="/reviews/edit/${review.id}" data-link>Edit</a>` : ''}
+                    ${isAdmin ? `<a href="/reviews/delete/${review.id}" data-link>Delete</a>` : ''}
             </div>
         `).join('') : '<p>No reviews yet for this book.</p>';
     }

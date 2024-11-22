@@ -10,7 +10,9 @@ export default class extends boilerplate {
     }
 
     async getHtml() {
-        return `
+        try {
+            const response = await fetch('http://localhost:8080/api/books/search');
+            return `
             <h1 class="">Advanced Search Options</h1>
             <section class="">
                 <div class="">
@@ -28,7 +30,12 @@ export default class extends boilerplate {
             </section>
             <div id="searchResults"></div>
         `;
+        } catch (error) {
+            console.error(error);
+        }
     }
+
+    
 
     async afterRender() {
         const form = document.getElementById('searchForm');
@@ -37,17 +44,26 @@ export default class extends boilerplate {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(form);
-            
+
             const searchQuery = {
                 title: formData.get('title'),
                 author: formData.get('author'),
                 category: formData.get('category')
             };
-            
+
             try {
                 const response = await fetch(`http://localhost:8080/api/books/search?q=${encodeURIComponent(searchQuery.title || searchQuery.author || searchQuery.category)}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch books');
+                }
+
+                const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+                const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
+                const isAdmin = payload?.isAdmin || false;
+
                 const data = await response.json();
-                console.log('Search results:', data);
+                // // console.log('Search results:', data);
 
                 if (data.books && data.books.length > 0) {
                     resultsDiv.innerHTML = data.books.map(book => `
@@ -63,9 +79,9 @@ export default class extends boilerplate {
                             </div>
                             <div>
                                 <a href="/books/${book.id}" data-link>View Details</a>
-                                <a href="/reviews/${book.id}" data-link>Leave a Review</a>
-                                <a href="/books/edit/${book.id}" data-link>Edit</a>
-                                <a href="/books/delete/${book.id}" data-link>Delete</a>
+                                ${token ? `<a href="/reviews/${book.id}" data-link>Leave a Review</a>` : ''}
+                                ${isAdmin ? `<a href="/books/edit/${book.id}" data-link>Edit</a>` : ''}
+                                ${isAdmin ? `<a href="/books/delete/${book.id}" data-link>Delete</a>` : ''}
                             </div>
                         </div>
                     `).join('');
@@ -77,4 +93,5 @@ export default class extends boilerplate {
             }
         });
     }
-}        
+}
+

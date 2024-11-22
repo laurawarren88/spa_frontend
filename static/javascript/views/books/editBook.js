@@ -7,25 +7,30 @@ class EditBook extends boilerplate {
         this.setTitle("Edit the Book");
         // console.log('Params received:', params);
         this.bookId = params.id;
+        this.userID = params.userID;
     }
 
     async getHtml() {
         try {
-            const token = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('token='))
-            ?.split('=')[1];
+        // //     const token = document.cookie
+        // //     .split('; ')
+        // //     .find(row => row.startsWith('token='))
+        // //     ?.split('=')[1];
 
-           if (!token) {
-               return `
-                   <div class="auth-error">
-                       <h2>Authentication Required</h2>
-                       <p>Please <a href="/users/login" data-link>login</a> to edit books.</p>
-                   </div>
-               `;
-           }
+        // //    if (!token) {
+        // //        return `
+        // //            <div class="auth-error">
+        // //                <h2>Authentication Required</h2>
+        // //                <p>Please <a href="/users/login" data-link>login</a> to edit books.</p>
+        // //            </div>
+        // //        `;
+        // //    }
             const response = await fetchToken(`http://localhost:8080/api/books/edit/${this.bookId}`, {
                 method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]}`
+                },
+                credentials: 'include'
             });
             
             const book = await response.json();

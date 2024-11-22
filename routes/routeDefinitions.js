@@ -21,6 +21,7 @@ import forgotPassword from "../static/javascript/views/users/forgotPassword.js";
 import logout from "../static/javascript/views/users/logout.js";
 
 import { requireAuth } from "../utils/authCheck.js"
+import { requireAdmin } from "../utils/adminCheck.js"
 
 export const homeRoutes = [
     { path: '/', view: home },
@@ -30,9 +31,9 @@ export const homeRoutes = [
 export const bookRoutes = [
     { path: '/books', view: books },
     { path: '/books/search', view: searchBook },
-    { path: '/books/new', view: requireAuth(newBook) },
-    { path: '/books/edit/:id', view: requireAuth(editBook) },
-    { path: '/books/delete/:id', view: requireAuth(deleteBook) },
+    { path: '/books/new', view: requireAuth(requireAdmin(newBook)) },
+    { path: '/books/edit/:id', view: requireAuth(requireAdmin(editBook)) },
+    { path: '/books/delete/:id', view: requireAuth(requireAdmin(deleteBook)) },
     { path: '/books/:id', view: showBook }
 ];
 
@@ -40,8 +41,8 @@ export const reviewRoutes = [
     { path: '/reviews', view: reviews },
     { path: '/reviews/new/:bookId', view: requireAuth(newReview) },
     { path: '/reviews/book/:bookId', view: showReviews },
-    { path: '/reviews/edit/:reviewId', view: requireAuth(editReview) },
-    { path: '/reviews/delete/:reviewId', view: requireAuth(deleteReview) },
+    { path: '/reviews/edit/:reviewId', view: requireAuth(requireAdmin(editReview)) },
+    { path: '/reviews/delete/:reviewId', view: requireAuth(requireAdmin(deleteReview)) },
     { path: '/reviews/:reviewId', view: singleReview},
 ];
 
