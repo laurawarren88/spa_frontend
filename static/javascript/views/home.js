@@ -16,57 +16,94 @@ export default class extends boilerplate {
             const token = document.cookie.split('; ').find(row => row.startsWith('token='));
             const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
             const isAdmin = payload?.isAdmin || false;
+            const username = payload?.username || 'Guest';
             
             const data = await response.json();
             const books = data.books || [];
+
+            // Display just 50 books and random every page load
+            const randomBooks = books
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 50);
     
-            const booksHtml = books.length > 0 ? books.map(book => `
-                <section class="">
-                <div>
-                    <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}">
+            const booksHtml = randomBooks.length > 0 ? `
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-8">
+                ${randomBooks.map(book => `
+                    <div class="relative flex flex-col bg-white border border-black rounded min-h-[500px]">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}" class="h-full w-full object-cover" />
+                        </div>
+                        <div class="p-4 flex flex-col justify-between flex-grow">
+                            <div>
+                                <h3 class="mb-3 text-slate-600 text-xl font-semibold">${book.title}</h3>
+                                <p class="mb-3 text-slate-500 leading-normal font-light">${book.author}</p>
+                                <p class="mb-3 rounded bg-cyan-400 py-0.5 border border-transparent text-xs text-white transition-all w-20 text-center">${book.category}</p>
+                                <p class="mb-4 text-slate-600 leading-normal font-light">${book.description.substring(0, 50)}${book.description.length > 50 ? '...' : ''}</p>
+                            </div>
+                            <div class="flex flex-col mt-auto gap-3">
+                                <div class="grid grid-flow-col justify-start gap-4">
+                                    <a href="/books/${book.id}" class="btn-secondary" data-link>View</a>
+                                    ${token ? `<a href="/reviews/new/${book.id}" class="btn-primary" data-link>Review</a>` : ''}
+                                </div>
+                                ${isAdmin ? `
+                                <div class="grid grid-flow-col justify-start gap-4">
+                                    <a href="/books/edit/${book.id}" class="btn-edit" data-link>Edit</a>
+                                    <a href="/books/delete/${book.id}" class="btn-delete" data-link>Delete</a>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
                 </div>
-                <div>
-                    <h3 class="">${book.title}</h3>
-                    <p class="">${book.author}</p>
-                    <p class="">${book.category}</p>
-                    <p class="">${book.description}</p>
-                </div>
-                <div>
-                    <a href="/books/${book.id}" data-link>View</a>
-                    ${token ? `<a href="/reviews/new/${book.id}" data-link>Leave a Review</a>` : ''}
-                    ${isAdmin ? `<a href="/books/edit/${book.id}" data-link>Edit</a>` : ''}
-                    ${isAdmin ? `<a href="/books/delete/${book.id}" data-link>Delete</a>` : ''}
-                </div>
-                </section>
-            `).join('') : '<p>No books available yet. Be the first to add a review!</p>';
+                ` : '<p>No books available yet. Be the first to add a review!</p>';
     
             return `
-                <section class="">
-                    <div class="">
-                        <h2>Have your say!</h2>
+            <!-- Hero Section -->
+                <section class="relative h-screen">
+                    <img class="absolute w-full h-full object-cover" src="/static/images/header.jpg" alt="Book">
+                    <div class="relative max-w-7xl mx-auto h-full">
+                        <div class="absolute top-1/3 right-4 text-right">
+                            <h3 class="text-3xl text-slate-300 mb-4">Have a Favourite Book?</h3>
+                            <p class="text-xl text-slate-300 italic mb-4">Want everyone to know about it?</p>
+                            <p class="text-xl font-bold text-cyan-400 mb-4">HAVE YOUR SAY!!!</p>
+                            <a href="/reviews" class="inline-block btn-primary" data-link>Leave a Review</a>
+                        </div>
                     </div>
                 </section>
-    
-                <section class="">
-                    <div class="">
-                        <h2 class="">Search for a book</h2>
-                        <form id="searchForm" class="">
-                            <div class="">
-                                <input type="text" name="title" placeholder="Search for a book by title" required>
-                                <button type="submit">Search</button>
-                            </div>
-                            <div class="">
-                                <a href="/books/search" data-link>Advanced Search</a>
-                            </div>
-                        </form>
-                    </div>
-                </section>
-    
-                <h1 class="">Book Reviews</h1>
 
-                <div id="searchResults"></div>
+            <!-- Heading Section -->
+                <section class="max-w-7xl mx-auto">
+                    <div class="title-section">
+                        <h1 class="h1-primary">HAVE YOUR SAY!!!</h1>
+                    </div>
+                </section>
+
+            <!-- Search Section -->
+                <section class="max-w-7xl mx-auto mt-12">
+                    <div class="flex justify-end">
+                        <div class="w-96">
+                            <div class="bg-white px-1 py-1 rounded-full border border-black overflow-hidden mb-2">
+                                <form id="searchForm" class="flex items-center">
+                                    <input type="text" name="title" placeholder="Search for a book by title" class="w-full border-none bg-white pl-4 focus:outline-none" required>
+                                    <button type="submit" class="bg-amber-400 hover:bg-amber-200 transition-all text-slate-500 rounded-full px-5 py-2.5">Search</button>
+                                </form>
+                            </div>
+                            <div class="text-center">
+                                <a href="/books/search" class="text-slate-500 text-sm hover:text-amber-400" data-link>Advanced Search</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            <!-- Search Results -->
+                <section id="searchResults" class="max-w-7xl mx-auto">
+                </section>
     
-                <div id="booksContainer">${booksHtml}</div> 
+            <!-- Books Section -->
+                <section id="booksContainer" class="max-w-7xl mx-auto">
+                    ${booksHtml}
+                </section> 
             `;
         } catch (error) {
             console.error('Error fetching books:', error);

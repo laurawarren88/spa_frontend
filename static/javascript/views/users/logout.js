@@ -1,3 +1,4 @@
+import { updateNavigation } from "../../../../utils/resNav.js";
 import boilerplate from "../boilerplate.js";
 
 class Logout extends boilerplate {
@@ -17,6 +18,7 @@ class Logout extends boilerplate {
             });
             
             if (response.ok) {
+                updateNavigation(false);
                 document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost; samesite=lax";
                 window.history.pushState(null, null, `/`);
                 window.dispatchEvent(new PopStateEvent('popstate'));

@@ -5,16 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Media Review App</title>
     <link rel="stylesheet" href="/static/stylesheets/style.css" type="text/css">
+    <link rel="stylesheet" href="/static/stylesheets/output.css" type="text/css">
+
+     <!-- font awesome icons -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
   </head>
   <body>
-    <nav>
-      <a href="/" data-link>Home</a>
-      <a href="/books" data-link>Books</a>
-      <a href="/reviews" data-link>Reviews</a>
-      <a href="/users/login" data-link>Login</a>
-      <a href="/users/register" data-link>Register</a>
-      <a href="/users/logout" data-link>Logout</a>
-    </nav>  
+      <!-- overall nav -->
+      <nav class="fixed top-0 left-0 right-0 z-50 bg-transparent transition-colors duration-300">
+        <!-- container -->
+        <div class="max-w-7xl mx-auto px-4">
+          <!-- Creating space between left side and right side -->
+          <div class="flex justify-between">
+            <!-- left size -->
+            <div class="flex items-center space-x-1">
+              <div>
+                <a href="/" class="flex items-center py-3 px-3 text-cyan-400 hover:text-amber-400">
+                  <img src="/static/images/logo.png" alt="logo" class="h-12 w-12 mr-1" />
+                  <span class="font-bold">HAVE YOUR SAY</span>
+                </a>
+              </div>
+              <div class="hidden md:flex items-center space-x-3">
+                <a href="/" class="py-3 px-3 hover:text-gray-700 text-slate-300" data-link>Home</a>
+                <a href="/books" class="py-3 px-3 hover:text-gray-700 text-slate-300" data-link>Books</a>
+                <a href="/reviews" class="py-3 px-3 hover:text-gray-700 text-slate-300" data-link>Reviews</a>
+              </div>
+            </div>
+            <!-- right side -->
+            <div class="hidden md:flex items-center space-x-1">  
+              <div class="auth-public">
+                <a href="/users/login" class="py-3 px-3 text-slate-300 hover:text-gray-700" data-link>Login</a>
+                <a href="/users/register" class="btn-primary" data-link>Register</a>
+              </div>
+              <div class="auth-private hidden">
+                <a href="/users/logout" class="py-3 px-3 text-slate-300 hover:text-gray-700" data-link>Logout</a>
+                <a href="/profile" class="btn-primary" data-link>Profile</a>
+              </div>
+            </div>
+            <!-- mobile menu button -->
+            <div class="md:hidden flex items-center">
+              <button class="mobile-menu-button">
+                <i class="w-7 h-7 text-slate-300 fa-solid fa-bars"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="mobile-menu hidden md:hidden text-center bg-black/75">
+          <a href="/" class="block py-2 px-4 text-sm text-slate-300 hover:bg-gray-700" data-link>Home</a>
+          <a href="/books" class="block py-2 px-4 text-sm text-slate-300 hover:bg-gray-700" data-link>Books</a>
+          <a href="/reviews" class="block py-2 px-4 text-sm text-slate-300 hover:bg-gray-700" data-link>Reviews</a>
+        </div>
+      </nav>  
 
     <div id="app"></div> 
     

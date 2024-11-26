@@ -27,10 +27,10 @@ class EditBook extends boilerplate {
         // //    }
             const response = await fetchToken(`http://localhost:8080/api/books/edit/${this.bookId}`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]}`
-                },
-                credentials: 'include'
+            //     headers: {
+            //         'Authorization': `Bearer ${document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]}`
+            //     },
+            //     credentials: 'include'
             });
             
             const book = await response.json();

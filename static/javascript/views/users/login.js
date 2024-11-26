@@ -1,3 +1,4 @@
+import { updateNavigation } from "../../../../utils/resNav.js";
 import boilerplate from "../boilerplate.js";
 
 export default class extends boilerplate {
@@ -50,17 +51,19 @@ async getHtml() {
                     body: JSON.stringify({
                         email: formData.get('email'),
                         password: formData.get('password'),
+
                     }),
                     credentials: 'include',
                 })
 
                 // ** Uncomment these for Debugging **
                 // .then (console.log(document.cookie))
-                // const data = await response.json();
-                // console.log("Login Data:", data)
+                const data = await response.json();
+                console.log("Login Data:", data)
                 // console.log("Cookie:", document.cookie);
 
                 if (response.ok) {
+                    updateNavigation(true);
                     window.history.pushState(null, null, `/profile`);
                     window.dispatchEvent(new PopStateEvent('popstate'));
                 } else {

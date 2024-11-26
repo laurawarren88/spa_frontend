@@ -74,7 +74,7 @@ class NewBook extends boilerplate {
                     return;
                 }
                 formData.append('image', imageFile);
-                console.log('Form data:', formData);
+                // console.log('Form data:', formData);
             }
 
             try {

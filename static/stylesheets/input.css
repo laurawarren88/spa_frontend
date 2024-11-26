@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .title-section {
+        @apply text-center mt-8;
+    }
+
+    .h1-primary {
+        @apply text-4xl font-bold text-slate-800 leading-tight mb-2 py-4;
+        border-style: solid;
+        border-width: 4px 0;
+        border-image: linear-gradient(90deg, 
+            #22d3ee,
+            #FFBE16,
+            #fa248f
+        ) 1;
+    }
+
+    .btn-primary {
+        @apply py-2 px-3 bg-amber-400 hover:bg-amber-200 text-slate-500 rounded hover:text-gray-700 transition duration-300;
+    }
+
+    .btn-secondary {
+        @apply py-2 px-3 border border-amber-400 hover:bg-cyan-200 text-slate-500 rounded hover:text-gray-700 transition duration-300;
+    }
+
+    .btn-delete {
+        @apply py-2 px-3 bg-fuchsia-600 hover:bg-fuchsia-200 text-white rounded hover:text-gray-700 transition duration-300;
+    }
+
+    .btn-edit {
+        @apply py-2 px-3 bg-cyan-400 hover:bg-cyan-200 text-white rounded hover:text-gray-700 transition duration-300;
+    }
+}
