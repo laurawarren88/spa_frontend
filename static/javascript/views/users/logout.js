@@ -1,4 +1,5 @@
 import { updateNavigation } from "../../../../utils/resNav.js";
+import { showMessage } from "../../../../utils/messageAlert.js";
 import boilerplate from "../boilerplate.js";
 
 class Logout extends boilerplate {
@@ -8,6 +9,22 @@ class Logout extends boilerplate {
     }
 
     async getHtml() {
+        return `
+            <section class="bg-softWhite">
+            
+                <!-- Alert container -->
+                <div id="alertContainer" class="hidden"></div>
+
+                <div class="flex flex-col items-center justify-center mx-auto h-screen">
+                    <div class="message-layout">
+                        <h1 class="message-title">Logging Out...</h1>
+                    </div>
+                </div>
+            </section>
+        `;
+    }
+
+    async afterRender() {
         try {
             const response = await fetch('http://localhost:8080/api/users/logout', {
                 method: 'POST',
@@ -20,22 +37,19 @@ class Logout extends boilerplate {
             if (response.ok) {
                 updateNavigation(false);
                 document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost; samesite=lax";
-                window.history.pushState(null, null, `/`);
-                window.dispatchEvent(new PopStateEvent('popstate'));
+                setTimeout(() => {
+                    window.history.pushState(null, null, `/`);
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                }, 1000);
             } else {
-                const errorResponse = await response.json();
-                console.error('Error response:', errorResponse);
-                alert(errorResponse?.error || 'Failed to Login');
+                const data = await response.json();
+                // console.error("Error:", error);
+                showMessage('alertContainer', data?.error || 'Failed to logout', 'error');
             }
         } catch (error) {
-            console.error('Logout error:', error);
-            alert('An error occurred while Logging out.')
+            // console.error('Error:', error);
+            showMessage('alertContainer', 'An error occurred while logging out', 'error');
         }
-        return '';
-    }
-
-    async afterRender() {
-        await this.getHtml();
     }
 }
 

@@ -2,35 +2,122 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Lora';
+  src: url('../fonts/lora.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../fonts/playfair-display.ttf') format('truetype');
+}
+
 @layer components {
-    .title-section {
-        @apply text-center mt-8;
-    }
 
-    .h1-primary {
-        @apply text-4xl font-bold text-slate-800 leading-tight mb-2 py-4;
-        border-style: solid;
-        border-width: 4px 0;
-        border-image: linear-gradient(90deg, 
-            #22d3ee,
-            #FFBE16,
-            #fa248f
-        ) 1;
-    }
+  /* Main heading section */
+  .title-section {
+    @apply text-center mt-8;
+  }
 
-    .btn-primary {
-        @apply py-2 px-3 bg-amber-400 hover:bg-amber-200 text-slate-500 rounded hover:text-gray-700 transition duration-300;
-    }
+  .h1-primary {
+    @apply text-4xl font-playfair font-bold text-slate-800 leading-tight mb-2 py-4;
+    border-style: solid;
+    border-width: 4px 0;
+    border-image-source: linear-gradient(to right, #FFD700, #D4AF37, #FFD700 );
+    border-image-slice: 1;
+  }
 
-    .btn-secondary {
-        @apply py-2 px-3 border border-amber-400 hover:bg-cyan-200 text-slate-500 rounded hover:text-gray-700 transition duration-300;
-    }
+  /* buttons */
+  .btn-primary {
+    @apply py-2 px-3 font-lora bg-gold hover:bg-brightGold text-slateGray rounded transition duration-300;
+  }
 
-    .btn-delete {
-        @apply py-2 px-3 bg-fuchsia-600 hover:bg-fuchsia-200 text-white rounded hover:text-gray-700 transition duration-300;
-    }
+  .btn-secondary {
+    @apply py-2 px-3 font-lora bg-teal hover:bg-softTeal text-softWhite rounded transition duration-300;
+  }
 
-    .btn-edit {
-        @apply py-2 px-3 bg-cyan-400 hover:bg-cyan-200 text-white rounded hover:text-gray-700 transition duration-300;
-    }
+  .btn-delete {
+    @apply py-2 px-3 font-lora bg-red-600 hover:bg-red-400 text-slateGray rounded transition duration-300;
+  }
+
+  .btn-edit {
+    @apply py-2 px-3 font-lora bg-rose hover:bg-softRose text-slateGray rounded transition duration-300;
+  }
+
+  .link {
+    @apply font-lora text-teal hover:text-softTeal;
+  }
+
+  /* Book Card */
+  .book-card {
+    @apply relative flex flex-col rounded-lg min-h-[400px] bg-gradient-to-r from-gray-50 via-gray-100 to-gray-200;
+    /* background: linear-gradient(to bottom, #f8f4e9, #eae4d3); */
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      2px 2px 6px -1px rgba(212, 175, 55, 0.1);
+    border: 1px solid #d4b052;
+  }
+
+  .book-card:hover {
+    @apply transform transition-transform duration-300;
+    box-shadow: 
+      0 8px 12px -1px rgba(0, 0, 0, 0.15),
+      4px 4px 8px -1px rgba(212, 175, 55, 0.2);
+  }
+  
+  .book-image-container {
+    @apply relative h-48 overflow-hidden rounded-t-lg;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+  }
+  
+  .book-content {
+    @apply p-3 flex flex-col justify-between flex-grow;
+    background-image: 
+      linear-gradient(45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%);
+    background-size: 4px 4px;
+  }
+  
+  .book-title {
+    @apply font-playfair mb-2 text-xl font-semibold text-slate-800 tracking-wide uppercase;
+    text-shadow: 1px 1px 1px rgba(212, 175, 55, 0.1);
+  }
+
+  /* forms */
+  .form-container {
+    @apply w-full bg-white rounded-lg border border-gold sm:max-w-md xl:p-0;
+  }
+
+  .form-layout {
+    @apply p-3 space-y-4 md:space-y-6 sm:p-8;
+  }
+
+  .form-title {
+    @apply text-xl font-bold font-playfair leading-tight tracking-tight text-slateGray;
+  }
+
+  .form-label {
+    @apply block mb-2 font-lora text-sm font-medium text-slateGray;
+  }
+
+  .form-input {
+    @apply bg-white border border-slate-300 font-lora text-slate-600 rounded-lg block w-full p-2.5 focus:border-gold focus:outline-none;
+  }
+
+  /* Error Message */
+  .message-container {
+    @apply flex items-center justify-center py-10;
+  }
+
+  .message-layout {
+    @apply text-center;
+  }
+
+  .message-title{
+    @apply font-playfair text-2xl text-slate-800 mb-4;
+  }
+
+  .message-text {
+    @apply font-lora text-slate-600;
+  }  
 }

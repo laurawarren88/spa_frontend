@@ -49,6 +49,6 @@ export const reviewRoutes = [
 export const userRoutes = [
     { path: '/users/login', view: login },
     { path: '/users/register', view: register },
-    { path: '/users/forgot-password', view: forgotPassword },
+    { path: '/users/forgot_password', view: forgotPassword },
     { path: '/users/logout', view: requireAuth(logout) },
 ];

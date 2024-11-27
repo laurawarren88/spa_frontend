@@ -1,4 +1,5 @@
 import boilerplate from "../boilerplate.js"
+import { showMessage } from "../../../../utils/messageAlert.js";
 
 export default class extends boilerplate {
     constructor (params) {
@@ -8,67 +9,85 @@ export default class extends boilerplate {
 
 async getHtml() {
     return ` 
-        <section>
-            <div class="">
-                <h3 class="">Register</h3>
-                <form id="newUserForm" class="" onsubmit="return false">
-                    <label class="" for="username">Username</label>
-                    <input type="text" name="username" placeholder="Username" required><br>
+        <section class="bg-softWhite">
 
-                    <label class="" for="email">Email Address</label>
-                    <input type="email" name="email" placeholder="Email" required><br>
+            <!-- Alert container -->
+            <div id="alertContainer" class="hidden"></div>
 
-                    <label class="" for="password">Password</label>
-                    <input type="password" name="password" placeholder="Password" required><br>
+            <div class="flex flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
+            
+            <!-- Form Container -->
+            <div class="form-container">
+                <div class="form-layout">
+                    <h1 class="form-title">Register</h1>
+                    
+                    <form id="newUserForm" class="space-y-4 md:space-y-6">
+                        <div>
+                            <label class="form-label" for="username">Username</label>
+                            <input type="text" name="username" class="form-input" placeholder="Username" required>
+                        </div>
+                        <div>
+                            <label class="form-label" for="email">Email Address</label>
+                            <input type="email" name="email" class="form-input" placeholder="Email" required>
+                        </div>
+                        <div>
+                            <label class="form-label" for="password">Password</label>
+                            <input type="password" name="password" class="form-input" placeholder="Password" required>
+                        </div>
+                        <div>
+                            <label class="form-label" for="confirm_password">Confirm Password</label>
+                            <input type="password" name="confirm_password" class="form-input" required>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <a href="/users/login" class="link" data-link>Already have an account?</a>
+                            <a href="/users/forgot_password" class="link" data-link>Forgot Password?</a>
+                        </div>
 
-                    <label class="" for="confirm_password">Confirm Password</label>
-                    <input type="password" name="confirm_password" required><br>
-                    <div>
-                        <a href="/user/login" class="" data-link>Already have an account?</a>
-                        <a href="/user/forgot_password" class="" data-link>Forgot Password?</a>
-                    </div>
-                    <button type="submit" id="submit">Sign Up</button>
+                        <button type="submit" id="submit" class="btn-primary w-full">Sign Up</button>
 
-                    <a href="/" data-link>Home</a>
-                </form>
+                        <div class="flex items-center justify-center">
+                            <a href="/" class="link text-center" data-link>Home</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </section>
     `;
 }
 
-async afterRender() {
-    const form = document.getElementById('newUserForm');
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(form);
-        const payload = {
-            username: formData.get("username"),
-            email: formData.get("email"),
-            password: formData.get("password"),
-            confirm_password: formData.get("confirm_password"),
-        };
-        try {
-            const response = await fetch('http://localhost:8080/api/users/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
+    async afterRender() {
+        const form = document.getElementById('newUserForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const payload = {
+                username: formData.get("username"),
+                email: formData.get("email"),
+                password: formData.get("password"),
+                confirm_password: formData.get("confirm_password"),
+            };
+            try {
+                const response = await fetch('http://localhost:8080/api/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
 
-            if (response.ok) {
-                console.log("User registered successfully!");
-                window.history.pushState(null, null, '/users/login');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-            } else {
-                const errorResponse = await response.json();
-                console.error("Error:", error);
-                alert(errorResponse?.error || 'Failed to create an account');
+                if (response.ok) {
+                    // console.log("User registered successfully!");
+                    window.history.pushState(null, null, '/users/login');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                } else {
+                    const data = await response.json();
+                    // console.error("Error:", error);
+                    showMessage('alertContainer', data?.error || 'Failed to create an account', 'error');
+                }
+            } catch (error) {
+                // console.error('Error:', error);
+                showMessage('alertContainer', 'An error occurred while creating the account', 'error');
             }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while creating the account.');
-        }
-    });
-}
+        });
+    }
 }

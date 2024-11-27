@@ -1,68 +1,78 @@
 import boilerplate from "../boilerplate.js";
-import { fetchToken } from "../../../../utils/fetchToken.js";
+import { showMessage } from "../../../../utils/messageAlert.js";
 
 export default class extends boilerplate {
     constructor(params) {
         super(params);
-        this.setTitle("Login");
+        this.setTitle("Forgot Password");
         this.userId = params.userId;
     }
 
 async getHtml() {
-    try {
-        const userResponse = await fetchToken(`http://localhost:8080/api/users/reset-password`);
-        const responseData = await userResponse.json();
-
-        const userData = responseData.user;
-
-        if (!userData) {
-            console.error("User data is missing:", responseData);
-            throw new Error("Failed to fetch user data");
-    }
     return `
-        <section>
-            <div class="">
-                <h3 class="">Forgot Password?</h3>
-                <form id="forgotPasswordForm" class="" onsubmit="return false">
-                    <label class="" for="email">Email Address</label>
-                    <input type="text" id="email" name="email" required><br>
-                    <button type="submit" id="submit">Reset Password</button>
-                    <a href="/" data-link>Home</a>
-                </form>
+        <section class="bg-softWhite">
+        
+            <!-- Alert container -->
+            <div id="alertContainer" class="hidden"></div>
+            
+            <div class="flex flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
+            
+            <!-- Form Container -->
+                <div class="form-container">
+                    <div class="form-layout">
+                        <h1 class="form-title">Forgot Password</h1>
+            
+                        <form id="forgotPasswordForm" class="space-y-4 md:space-y-6">
+                            <div>
+                                <label class="form-label" for="email">Email Address</label>
+                                <input type="email" name="email" class="form-input" placeholder="name@company.com" required>
+                            </div>
+                            
+                            <button type="submit" id="submit" class="btn-primary w-full">Reset Password</button>
+                            
+                            <div class="flex items-center justify-center">
+                                <a href="/" class="link text-center" data-link>Home</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </section>
     `;
-    } catch (error) {
-        console.error('Error:', error);
-        return '<h1>Error loading login form</h1>';
-    }
 }
 
     async afterRender() {
         const form = document.getElementById('forgotPasswordForm');
+        if (!form) {
+            console.error('Forgot password form not found.');
+            return;
+        }
+    
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(form);
+            const jsonData = Object.fromEntries(formData.entries());
             
             try {
-                const response = await fetchToken('http://localhost:8080/api/users/reset-password', {
+                const response = await fetch('http://localhost:8080/api/users/forgot_password', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
-                    body: formData
+                    body: JSON.stringify(jsonData)
                 });
 
                 if (response.ok) {
                     window.history.pushState(null, null, '/');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                 } else {
-                    const errorResponse = await response.json();
-                    alert(errorResponse?.error || 'Failed to reset password');
+                    const data = await response.json();
+                    // console.error("Error:", error);
+                    showMessage('alertContainer', data?.error || 'Failed to reset password', 'error');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while resetting password.');
+                // console.error('Error:', error);
+                showMessage('alertContainer', 'An error occurred while resetting password', 'error');
             }
         });
     }
