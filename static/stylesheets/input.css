@@ -9,11 +9,10 @@
 
 @font-face {
   font-family: 'Playfair Display';
-  src: url('../fonts/playfair-display.ttf') format('truetype');
+  src: url('../fonts/PlayfairDisplay.ttf') format('truetype');
 }
 
 @layer components {
-
   /* Main heading section */
   .title-section {
     @apply text-center mt-8;
@@ -35,15 +34,6 @@
   .btn-secondary {
     @apply py-2 px-3 font-lora bg-teal hover:bg-softTeal text-softWhite rounded transition duration-300;
   }
-
-  .btn-delete {
-    @apply py-2 px-3 font-lora bg-red-600 hover:bg-red-400 text-slateGray rounded transition duration-300;
-  }
-
-  .btn-edit {
-    @apply py-2 px-3 font-lora bg-rose hover:bg-softRose text-slateGray rounded transition duration-300;
-  }
-
   .link {
     @apply font-lora text-teal hover:text-softTeal;
   }

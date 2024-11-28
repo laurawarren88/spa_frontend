@@ -41,16 +41,14 @@ export default class extends boilerplate {
                                 <p class="font-lora mb-3 text-slate-800 leading-normal font-light">${book.description.substring(0, 48)}${book.description.length > 48 ? '...' : ''}</p>
                             </div>
                             <div class="flex flex-col mt-auto gap-3">
-                            <div class="grid grid-flow-col justify-start gap-4">
-                                <a href="/books/${book.id}" class="btn-primary">View</a>
-                                ${token ? `<a href="/reviews/new/${book.id}" class="btn-secondary">Review</a>` : ''}
-                            </div>
-                            ${isAdmin ? `
-                            <div class="grid grid-flow-col justify-start gap-4 mt-4">
-                                <a href="/books/edit/${book.id}" class="btn-edit">Edit</a>
-                                <a href="/books/delete/${book.id}" class="btn-delete">Delete</a>
-                            </div>
-                            ` : ''}
+                                <div class="flex flex-row justify-start items-center gap-4">
+                                    <a href="/books/${book.id}" class="btn-primary w-24 text-center" data-link>View</a>
+                                    ${token ? `<a href="/reviews/new/${book.id}" class="btn-secondary w-24 text-center" data-link>Review</a>` : ''}
+                                    ${isAdmin ? `
+                                        <a href="/books/edit/${book.id}" class="link" data-link>Edit</a>
+                                        <a href="/books/delete/${book.id}" class="link" data-link>Delete</a>
+                                    ` : ''}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -60,7 +58,7 @@ export default class extends boilerplate {
                 <section class="message-container">
                     <div class="message-layout">
                         <h1 class="message-title">No books available yet.</h1>
-                        <p class="message-content">Please try again later.</p>
+                        <p class="message-content">Please come back later.</p>
                     </div>
                 </section>
             `;
@@ -136,10 +134,15 @@ export default class extends boilerplate {
             const searchQuery = formData.get('title');
 
         try {
-            const response = await fetch(`http://localhost:8080/api/books/search?q=${encodeURIComponent(searchQuery)}`);
+            const response = await fetch(`http://localhost:8080/api/books?q=${encodeURIComponent(searchQuery)}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch search results');
                 }
+
+                const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+                const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
+                const isAdmin = payload?.isAdmin || false;
+                
                 const data = await response.json();
                 // console.log('Search results:', data);
                 
@@ -147,10 +150,10 @@ export default class extends boilerplate {
                     booksContainer.innerHTML = '';
                     searchResults.innerHTML = `
                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-6">
-                    ${randomBooks.map(book => `
+                    ${data.books.map(book => `
                         <div class="book-card">
                             <div class="book-image-container">
-                                <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}" class="h-full w-full object-cover rounded-t-lg"/>
+                                <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}" class="h-full w-full object-cover"/>
                             </div>
                             <div class="book-content">
                                 <div>
@@ -160,21 +163,20 @@ export default class extends boilerplate {
                                     <p class="font-lora mb-3 text-slate-800 leading-normal font-light">${book.description.substring(0, 48)}${book.description.length > 48 ? '...' : ''}</p>
                                 </div>
                                 <div class="flex flex-col mt-auto gap-3">
-                                <div class="grid grid-flow-col justify-start gap-4">
-                                    <a href="/books/${book.id}" class="btn-primary">View</a>
-                                    ${token ? `<a href="/reviews/new/${book.id}" class="btn-primary">Review</a>` : ''}
-                                </div>
-                                ${isAdmin ? `
-                                <div class="grid grid-flow-col justify-start gap-4 mt-4">
-                                    <a href="/books/edit/${book.id}" class="btn-edit">Edit</a>
-                                    <a href="/books/delete/${book.id}" class="btn-delete">Delete</a>
-                                </div>
-                                ` : ''}
+                                    <div class="flex flex-row justify-start items-center gap-4">
+                                        <a href="/books/${book.id}" class="btn-primary w-24 text-center" data-link>View</a>
+                                        ${token ? `<a href="/reviews/new/${book.id}" class="btn-secondary w-24 text-center" data-link>Review</a>` : ''}
+                                        ${isAdmin ? `
+                                            <a href="/books/edit/${book.id}" class="link" data-link>Edit</a>
+                                            <a href="/books/delete/${book.id}" class="link" data-link>Delete</a>
+                                        ` : ''}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         `).join('')}
-                        </div>`;
+                        </div>
+                    `;
                     } else {
                         booksContainer.innerHTML = '';
                         searchResults.innerHTML = ` 
@@ -189,7 +191,7 @@ export default class extends boilerplate {
                     searchForm.reset();
                     
                 } catch (error) {
-                        console.log('Search error:', error);
+                        // console.log('Search error:', error);
                         searchResults.innerHTML = ` 
                             <section class="message-container">
                                 <div class="message-layout">
