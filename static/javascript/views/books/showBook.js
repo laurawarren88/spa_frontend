@@ -55,8 +55,10 @@ export default class extends boilerplate {
                         <div class="flex flex-col mt-auto gap-3">
                             <div class="flex flex-row justify-start items-center gap-4">
                                 ${token ? `<a href="/reviews/new/${this.bookId}" class="btn-primary w-36 text-center" data-link>Leave a Review</a>` : ''}
-                                ${isAdmin ? `<a href="/books/edit/${this.bookId}" class="link w-24 text-center" data-link>Edit</a>` : ''}
-                                ${isAdmin ? `<a href="/books/delete/${this.bookId}" class="link w-24 text-center" data-link>Delete</a>` : ''}
+                                ${isAdmin ? `
+                                    <a href="/books/edit/${this.bookId}" class="link w-24 text-center" data-link>Edit</a>
+                                    <a href="/books/delete/${this.bookId}" class="link w-24 text-center" data-link>Delete</a>
+                                ` : ''}
                             </div>
                         </div>
                     </div>

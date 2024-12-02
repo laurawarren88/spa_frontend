@@ -29,28 +29,42 @@ export default class extends boilerplate {
             // console.log('Fetched data:', review);
     
             return `
-                <div class="">
-                    <h1 class="">Review for ${review.book.title}</h1>
-                    <div class="">
-                        <span>Rating: </span>
-                        <div class="">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</div>
+                <section class="bg-softWhite py-8 mt-20">
+                    <!-- <div class="w-full max-w-7xl mx-auto px-4"> -->
+                    <div class="w-full flex justify-center px-4 sm:px-6">
+                        <div class="bg-white rounded-lg shadow-lg p-6 border border-gold w-auto max-w-7xl">
+                    
+                            <h1 class="review-title text-center">Review for ${review.book.title}</h1>
+                            <div class="rating flex justify-center">
+                                ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
+                            </div>
+
+                             <div class="py-4">
+                                <p class="font-lora text-justify">${review.review}</p>
+                            </div>
+                            <div class="flex flex-col mt-auto gap-3">
+                                <div class="flex flex-row justify-start items-center gap-4">                      
+                                        <a href="/reviews/book/${review.book.id}" class="btn-primary inline-block text-center" data-link>All reviews for this Book</a>
+                                        ${isAdmin ? `
+                                            <a href="/reviews/edit/${review.id}" class="link w-24 text-center" data-link>Edit Review</a>
+                                            <a href="/reviews/delete/${review.id}" class="link w-24 text-center" data-link>Delete</a>
+                                        ` : ''}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="">
-                        <p>${review.review}</p>
-                    </div>
-                    <div class="">
-                        <span class="">Posted on: ${new Date(review.createdAt).toLocaleDateString()}</span>
-                    </div>
-                    <div class="review-actions">                        
-                        <a href="/reviews/book/${review.book.id}" data-link>Back to Book Reviews</a>
-                        ${isAdmin ? `<a href="/reviews/edit/${review.id}" data-link>Edit Review</a>` : ''}
-                        ${isAdmin ? `<a href="/reviews/delete/${review.id}" data-link>Delete</a>` : ''}
-                    </div>
-                </div>
+                </section>
             `;
         } catch (error) {
-            console.error('Error:', error);
-            return '<h1>Failed to load review details</h1>';
+            // console.error('Error:', error);
+            return ` 
+                <section class="message-container">
+                    <div class="message-layout">
+                        <h1 class="message-title">Failed to load review details</h1>
+                        <p class="message-text">Please try again</p>
+                    </div>
+                </section>
+            `;
         }
     }
 }    

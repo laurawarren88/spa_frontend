@@ -29,34 +29,69 @@ export default class extends boilerplate {
             const bookTitle = data.bookTitle;
 
             const reviews = data.reviews ?? [];
-            if (!reviews || reviews.length === 0) {
+            if (reviews.length === 0) {
                 return `
-                    <div class="">
-                        <h1 class="">Reviews for ${bookTitle || 'Unknown Book'}</h1>
-                        <p>No reviews yet for this book.</p>
-                        ${token ? `<a href="/reviews/new/${this.bookId}" class="" data-link>Add Your Review</a>` : ''}
-                    </div>
+                    <section class="max-w-3xl mx-auto bg-softWhite">
+                        <div class="flex flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
+                            <div class="w-full bg-white border border-gold">
+                                <div class="">
+                                    <h1 class="text-xl font-bold font-playfair text-slateGray text-center">Reviews for: <span class="font-extrabold italic">${bookTitle || 'Unknown Book'}</span></h1>
+                                    <p class="font-lora text-center">No reviews yet for this book.</p>
+                                </div>
+                                <div class="flex justify-center m-6">
+                                    ${token ? `<a href="/reviews/new/${this.bookId}" class="btn-primary" data-link>Add Your Review</a>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 `;
             }
 
+            const bookImage = data.reviews[0]?.book?.image;
+            const bookAuthor = data.reviews[0]?.book?.author;
             const averageRating = reviews.reduce((acc, rev) => acc + rev.rating, 0) / reviews.length;
 
             return `
-                <div class="">
-                <h1 class="">Reviews for ${bookTitle}</h1>
-                <div class="">
-                    <span>Average Rating: ${averageRating.toFixed(1)}</span>
-                    <div class="">${'★'.repeat(Math.round(averageRating))}${'☆'.repeat(5 - Math.round(averageRating))}</div>
-                </div>
-                     ${token ? `<a href="/reviews/new/${this.bookId}" class="" data-link>Add Your Review</a>` : ''}
-                <div class="">
-                    ${this.renderReviews(reviews)}
-                </div>
-                </div>
+                <!-- Hero Section -->
+                    <section class="relative h-screen">
+                        <img class="absolute w-full h-full object-cover" src="data:image/jpeg;base64,${bookImage}" alt="${bookTitle}"">
+                    </section>
+
+                <!-- Heading Section -->
+                    <section class="max-w-7xl mx-auto">
+                        <div class="title-section">
+                            <h1 class="h1-primary">Reviews for ${bookTitle}</h1>
+                            <p class="font-lora mb-2 text-slate-700 leading-normal font-light italic">${bookAuthor}</p>
+                             <div class="flex justify-center mt-4">
+                                <span class="font-lora mr-3">Average Rating:</span>
+                                <div class="rating">${'★'.repeat(Math.round(averageRating))}${'☆'.repeat(5 - Math.round(averageRating))}</div>
+                            </div>
+                        </div>
+                    </section>
+
+                <!-- Button Section -->
+                    <section class="max-w-7xl mx-auto mt-8">
+                        <div class="flex justify-center w-auto">
+                            ${token ? `<a href="/reviews/new/${this.bookId}" class="btn-primary" data-link>Add Your Review</a>` : ''}
+                        </div>
+                    </section>
+
+
+                <!-- Reviews Section -->
+                    <div class="max-w-7xl mx-auto">
+                        ${this.renderReviews(reviews)}
+                    </div>
             `;
         } catch (error) {
-            console.error('Error:', error);
-            return '<h1>Error loading reviews</h1>';
+            // console.error('Error:', error);
+            return  ` 
+                <section class="message-container">
+                    <div class="message-layout">
+                        <h1 class="message-title">Error loading reviews</h1>
+                        <p class="message-text">Please try again</p>
+                    </div>
+                </section>
+            `;
         }
     }
 
@@ -65,18 +100,63 @@ export default class extends boilerplate {
         const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
         const isAdmin = payload?.isAdmin || false;
 
-        return reviews.length ? reviews.map(review => `
-            <div class="">
-                <div class="">
-                    <div class="">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</div>
-                    <span class="">${new Date(review.created_at).toLocaleDateString()}</span>
+        return reviews.length ? `
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+        ${reviews.map(review => `
+            <div class="review-card h-fit">
+                <div class="review-content">
+                    <div class="rating mb-2">
+                        ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
+                    </div>
+                    <span class="text-xs text-gray-500">
+                        ${(() => {
+                            const dateStr = review.createdAt || '1970-01-01T00:00:00Z';
+                            console.log('Review Created At:', review.createdAt);
+
+                            if (!dateStr) return 'Date not available'; // Handle missing dates
+
+                            try {
+                                const parsedDate = new Date(dateStr);
+
+                                if (isNaN(parsedDate.getTime())) return 'Invalid date'; // Handle invalid dates
+
+                                const day = String(parsedDate.getDate()).padStart(2, '0');
+                                const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+                                const year = parsedDate.getFullYear();
+
+                                return `${day}.${month}.${year}`;
+                            } catch (err) {
+                                console.error('Date parsing error:', err);
+                                return 'Date not available';
+                            }
+                        })()}
+                    </span>
                 </div>
-                <p class="">${review.review}</p>
-                    <a href="/reviews/${review.id}" data-link>Expand this review</a>
-                    ${isAdmin ? `<a href="/reviews/edit/${review.id}" data-link>Edit</a>` : ''}
-                    ${isAdmin ? `<a href="/reviews/delete/${review.id}" data-link>Delete</a>` : ''}
+
+                <p class="review-text mt-3 line-clamp-3">${review.review}</p>
+
+                <div class="flex flex-col mt-4 gap-5">
+                    <div>
+                        <a href="/reviews/${review.id}" class="btn-secondary inline-block w-full text-center" data-link>Expand this review</a>
+                    </div>
+                    <div class="flex justify-center">
+                        ${isAdmin ? `
+                            <a href="/reviews/edit/${review.id}" data-link>Edit</a>
+                            <a href="/reviews/delete/${review.id}" data-link>Delete</a>
+                        ` : ''}
+                    </div>
+                </div>
             </div>
-        `).join('') : '<p>No reviews yet for this book.</p>';
+        `).join('')}
+         </div>
+        ` : ` 
+            <section class="message-container">
+                <div class="message-layout">
+                    <h1 class="message-title">No reviews yet for this book.</h1>
+                    <p class="message-text">Please try again later or add your own</p>
+                </div>
+            </section>
+        `;
     }
 }
 

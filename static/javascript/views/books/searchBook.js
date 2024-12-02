@@ -11,87 +11,245 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            const response = await fetch('http://localhost:8080/api/books/search');
             return `
-            <h1 class="">Advanced Search Options</h1>
-            <section class="">
-                <div class="">
-                    <h2 class="">Search for a book</h2>
-                    <form id="searchForm" class="">
-                        <input type="text" name="title" class="" placeholder="Title">
-                        <p class="">and/or</p>
-                        <input type="text" name="author" class="" placeholder="Author">
-                        <p class="">and/or</p>
-                        <input type="text" name="category" class="" placeholder="Category">
-                        <button type="submit" id="submit">Search</button>
-                        <a href="/books" data-link><< Back</a>
+            <section class="bg-softWhite">
+
+            <!-- Alert container -->
+            <div id="alertContainer" class="hidden"></div>
+
+            <div class="flex flex-col items-center justify-center mx-auto pt-36 mb-10 h-max">
+
+            <div class="form-container">
+                <div class="form-layout">
+                    <h1 class="form-title">Advanced Search Options</h1>
+
+            <form id="searchForm" class="space-y-4 md:space-y-6">
+                <div>
+                    <label class="form-label" for="title">Title</label>
+                    <input type="text" name="title" class="form-input" placeholder="Oliver Twist">
+                </div>
+                <div>
+                    <p class="font-lora mb-3 text-slate-800 leading-normal font-light">and/or</p>
+                </div>
+                <div>
+                    <label class="form-label" for="author">Author</label>
+                    <input type="text" name="author" class="form-input" placeholder="Charles Dickens">
+                </div>
+                <div>
+                    <p class="font-lora mb-3 text-slate-800 leading-normal font-light">and/or</p>
+                </div>
+                <div>
+                    <label class="form-label" for="category">Category</label>
+                    <input type="text" name="category" class="form-input" placeholder="Childrens">
+                </div>
+                <div class="flex flex-col mt-auto gap-3">
+                    <div class="flex flex-row justify-start items-center gap-4">
+                        <button type="submit" class="btn-primary w-24 text-center" id="submit">Search</button>
+                        <a href="/books" class="link w-24 text-center" data-link><< Back</a>
                     </form>
                 </div>
             </section>
-            <div id="searchResults"></div>
+
+            <div id="searchResults" class="max-w-7xl mx-auto"></div>
         `;
         } catch (error) {
             console.error(error);
+            return `
+            <section class="message-container">
+                <div class="message-layout">
+                    <h1 class="message-title">Error loading search form</h1>
+                    <p class="message-text">Please try again later</p>
+                </div>
+            </section>
+        `;
         }
     }
 
     
 
-    async afterRender() {
-        const form = document.getElementById('searchForm');
-        const resultsDiv = document.getElementById('searchResults');
+//     async afterRender() {
+//         const searchForm = document.getElementById('searchForm');
+//         const searchResults = document.getElementById('searchResults');
+//         const booksContainer = document.getElementById('booksContainer');
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(form);
+//         searchForm.addEventListener('submit', async (e) => {
+//             e.preventDefault();
+//             const formData = new FormData(form);
 
-            const searchQuery = {
-                title: formData.get('title'),
-                author: formData.get('author'),
-                category: formData.get('category')
-            };
+//             const searchQuery = {
+//                 title: formData.get('title') || '',
+//                 author: formData.get('author') || '',
+//                 category: formData.get('category') || '',
+//             };
 
-            try {
-                const response = await fetch(`http://localhost:8080/api/books/search?q=${encodeURIComponent(searchQuery.title || searchQuery.author || searchQuery.category)}`);
+//             const queryParams = new URLSearchParams(searchQuery).toString();
+
+//             try {
+//                 const response = await fetch(`http://localhost:8080/api/books/search?${queryParams}`);
+//                 // const response = await fetch(`http://localhost:8080/api/books/search?q=${encodeURIComponent(searchQuery.title || searchQuery.author || searchQuery.category)}`);
                 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch books');
-                }
+//                 if (!response.ok) {
+//                     throw new Error('Failed to fetch books');
+//                 }
 
-                const token = document.cookie.split('; ').find(row => row.startsWith('token='));
-                const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
-                const isAdmin = payload?.isAdmin || false;
+//                 const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+//                 const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
+//                 const isAdmin = payload?.isAdmin || false;
 
-                const data = await response.json();
-                // // console.log('Search results:', data);
+//                 const data = await response.json();
+//                 console.log('Search results:', data);
 
-                if (data.books && data.books.length > 0) {
-                    resultsDiv.innerHTML = data.books.map(book => `
-                        <div class="book-card">
-                            <div>
-                                <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}">
-                            </div>
-                            <div>
-                                <h3>${book.title}</h3>
-                                <p>Author: ${book.author}</p>
-                                <p>Category: ${book.category}</p>
-                                <p>Description: ${book.description}</p>
-                            </div>
-                            <div>
-                                <a href="/books/${book.id}" data-link>View Details</a>
-                                ${token ? `<a href="/reviews/${book.id}" data-link>Leave a Review</a>` : ''}
-                                ${isAdmin ? `<a href="/books/edit/${book.id}" data-link>Edit</a>` : ''}
-                                ${isAdmin ? `<a href="/books/delete/${book.id}" data-link>Delete</a>` : ''}
-                            </div>
-                        </div>
-                    `).join('');
-                } else {
-                    resultsDiv.innerHTML = '<p>No books found for the given search criteria.</p>';
-                }
-            } catch (error) {
-                console.error('Search error:', error);
+//                 if (data.books && data.books.length > 0) {
+//                     booksContainer.innerHTML = '';
+//                     searchResults.innerHTML = `
+//                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+//                     ${data.books.map(book => `
+//                         <div class="book-card">
+//                             <div class="book-image-container">
+//                                 <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}" class="h-full w-full object-cover" />
+//                             </div>
+//                             <div>
+//                                 <h3 class="book-title">${book.title}</h3>
+//                                 <p class="font-lora mb-2 text-slate-700 leading-normal font-light italic">${book.author}</p>
+//                                 <p class="font-lora mb-2 rounded py-0.5 border border-gold text-xs text-slate-600 transition-all w-20 text-center uppercase tracking-wider">${book.category}</p>
+//                                 <p class="font-lora mb-3 text-slate-800 leading-normal font-light">${book.description.substring(0, 48)}${book.description.length > 48 ? '...' : ''}</p>
+//                             </div>
+//                             <div class="flex flex-col mt-auto gap-3">
+//                                 <div class="flex flex-row justify-start items-center gap-4">
+//                                     <a href="/books/${book.id}" class="btn-primary w-24 text-center" data-link>View</a>
+//                                     ${token ? `<a href="/reviews/new/${book.id}" class="btn-secondary w-24 text-center" data-link>Review</a>` : ''}
+//                                     ${isAdmin ? `
+//                                         <a href="/books/edit/${book.id}" class="link" data-link>Edit</a>
+//                                         <a href="/books/delete/${book.id}" class="link" data-link>Delete</a>
+//                                     ` : ''}
+//                                 </div>
+//                             </div>
+//                         </div>
+//                     </div>
+//                     `).join('')};
+//                     </div>
+//                 `;
+//                 } else {
+//                     booksContainer.innerHTML = '';
+//                     searchResults.innerHTML =  `
+//                         <section class="message-container">
+//                             <div class="message-layout">
+//                                 <h1 class="message-title">No books found for the given search criteria.</h1>
+//                                 <p class="message-text">Please try another</p>
+//                             </div>
+//                         </section>
+//                     `;
+//                 }
+
+//                 searchForm.reset();
+
+//             } catch (error) {
+//               console.log('Search error:', error);
+//                 searchResults.innerHTML = `
+//                     <section class="message-container">
+//                         <div class="message-layout">
+//                             <h1 class="message-title">Error fetching search results</h1>
+//                             <p class="message-text">Please try again</p>
+//                         </div>
+//                     </section>
+//                 `;
+//                 }
+//             });
+
+//             const inputs = document.querySelectorAll('input[name="title"], input[name="author"], input[name="category"]');
+//             inputs.forEach(input => {
+//                 input.addEventListener('input', () => {
+//                     if (input.value) {
+//                         searchResults.innerHTML = '';
+//                         booksContainer.style.display = 'block';
+//                     }
+//                 });
+//             });
+//     }
+// }
+
+async afterRender() {
+    const searchForm = document.getElementById('searchForm');
+    const searchResults = document.getElementById('searchResults');
+    const booksContainer = document.getElementById('booksContainer');
+
+    searchForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(searchForm);
+    
+        // Get search values
+        const title = formData.get('title').trim();
+        const author = formData.get('author').trim();
+        const category = formData.get('category').trim();
+    
+        // Build query string with only filled fields
+        let queryString = '';
+        if (title) queryString += `title=${encodeURIComponent(title)}&`;
+        if (author) queryString += `author=${encodeURIComponent(author)}&`;
+        if (category) queryString += `category=${encodeURIComponent(category)}&`;
+    
+        try {
+            const response = await fetch(`http://localhost:8080/api/books?${queryString}`);
+            
+            if (!response.ok) {
+                throw new Error('Search failed');
             }
-        });
-    }
-}
+    
+            const data = await response.json();
+            console.log('Search results:', data); // Debug the response
+    
+            // Rest of your existing display logic
+    
 
+            if (data.books && data.books.length > 0) {
+                searchResults.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+                        ${data.books.map(book => `
+                            <div class="book-card">
+                                <div class="book-image-container">
+                                    <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}" class="h-full w-full object-cover" />
+                                </div>
+                                <div>
+                                    <h3 class="book-title">${book.title}</h3>
+                                    <p class="font-lora mb-2 text-slate-700 leading-normal font-light italic">${book.author}</p>
+                                    <p class="font-lora mb-2 rounded py-0.5 border border-gold text-xs text-slate-600 transition-all w-20 text-center uppercase tracking-wider">${book.category}</p>
+                                    <p class="font-lora mb-3 text-slate-800 leading-normal font-light">${book.description.substring(0, 48)}${book.description.length > 48 ? '...' : ''}</p>
+                                </div>
+                                <div class="flex flex-col mt-auto gap-3">
+                                    <div class="flex flex-row justify-start items-center gap-4">
+                                        <a href="/books/${book.id}" class="btn-primary w-24 text-center" data-link>View</a>
+                                        ${token ? `<a href="/reviews/new/${book.id}" class="btn-secondary w-24 text-center" data-link>Review</a>` : ''}
+                                        ${isAdmin ? `
+                                            <a href="/books/edit/${book.id}" class="link" data-link>Edit</a>
+                                            <a href="/books/delete/${book.id}" class="link" data-link>Delete</a>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                searchResults.innerHTML = `
+                    <section class="message-container">
+                        <div class="message-layout">
+                            <h1 class="message-title">No books found for the given search criteria.</h1>
+                            <p class="message-text">Please try another search</p>
+                        </div>
+                    </section>
+                `;
+            }
+        } catch (error) {
+            console.log('Search error:', error);
+            searchResults.innerHTML = `
+                <section class="message-container">
+                    <div class="message-layout">
+                        <h1 class="message-title">Error fetching search results</h1>
+                        <p class="message-text">Please try again</p>
+                    </div>
+                </section>
+            `;
+        }
+    });
+}
+}

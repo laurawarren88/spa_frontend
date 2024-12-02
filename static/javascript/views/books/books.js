@@ -42,16 +42,16 @@ export default class extends boilerplate {
                             </div>
                             <div class="flex flex-col mt-auto gap-3">
                                 <div class="flex flex-row justify-start items-center gap-4">
-                                    <a href="/books/${book.id}" class="btn-primary  w-24 text-center" data-link>View</a>
+                                    <a href="/books/${book.id}" class="btn-primary w-24 text-center" data-link>View</a>
                                     ${token ? `<a href="/reviews/new/${book.id}" class="btn-secondary w-24 text-center" data-link>Review</a>` : ''}
-                                ${isAdmin ? `
-                                    <a href="/books/edit/${book.id}" class="link" data-link>Edit</a>
-                                    <a href="/books/delete/${book.id}" class="link" data-link>Delete</a>
-                                ` : ''}
+                                    ${isAdmin ? `
+                                        <a href="/books/edit/${book.id}" class="link" data-link>Edit</a>
+                                        <a href="/books/delete/${book.id}" class="link" data-link>Delete</a>
+                                    ` : ''}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
             `).join('')}
             </div>
             ` : `
@@ -87,7 +87,7 @@ export default class extends boilerplate {
                 <section class="max-w-7xl mx-auto mt-12">
                     <div class="flex justify-between">
                         <div class="w-auto pl-6 pt-2">
-                             ${isAdmin ? `<a href="/books/new" class="btn-secondary" data-link>Add Book</a>` : ''}
+                            ${isAdmin ? `<a href="/books/new" class="btn-secondary" data-link>Add Book</a>` : ''}
                         </div>
                     <div class="w-full max-w-md">
                         <div class="bg-white px-1 py-1 rounded-full border border-black overflow-hidden">
@@ -151,7 +151,7 @@ export default class extends boilerplate {
                 if (data.books && data.books.length > 0) {
                     booksContainer.innerHTML = '';
                     searchResults.innerHTML = `
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
                             ${data.books.map(book => `
                                 <div class="book-card">
                                     <div class="book-image-container">

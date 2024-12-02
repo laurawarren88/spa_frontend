@@ -18,30 +18,69 @@ export default class extends boilerplate {
             const isAdmin = payload?.isAdmin || false;
 
             const data = await response.json();
-            // console.log('Fetched data:', data);
+            console.log('Fetched data:', data);
             const reviews = data.reviews || [];
             // console.log('Fetched review:', reviews);
 
-            const reviewsHtml = reviews.length > 0 ? reviews.map(review => `
-                <div class="">
-                    <div class="">
-                    <p>${review.book.title}</p>
-                        <div class="">
+            const randomReviews = reviews
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 12);
+
+            const reviewsHtml = randomReviews.length > 0 ? `
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+            ${reviews.map(review => `
+                <div class="review-card">
+                    <div class="review-content flex-grow">
+                        <h3 class="review-title">${review.book.title}</h3>
+                        <p class="font-lora mb-2 text-slate-700 leading-normal font-light italic">${review.book.author}</p>
+                        <div class="rating mb-2">
                             ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
                         </div>
-                    </div>
-                    <p class="">${review.review}</p>
-                    <div class="">
-                        <span class="">${new Date(review.created_at).toLocaleDateString()}</span>
-                        <div class="">
-                            <a href="/reviews/book/${review.book.id}" data-link>View all reviews for this book</a>
-                            <a href="/reviews/${review.id}" data-link>Expand this review</a>
-                            ${isAdmin ? `<a href="/reviews/edit/${review.id}" data-link>Edit</a>` : ''}
-                            ${isAdmin ? `<a href="/reviews/delete/${review.id}" data-link>Delete</a>` : ''}
+                        <span class="text-xs text-gray-500">
+                            ${(() => {
+                                const dateStr = review.createdAt || '1970-01-01T00:00:00Z';
+                                console.log('Review Created At:', review.createdAt);
+
+                                if (!dateStr) return 'Date not available'; // Handle missing dates
+
+                                try {
+                                    const parsedDate = new Date(dateStr);
+
+                                    if (isNaN(parsedDate.getTime())) return 'Invalid date'; // Handle invalid dates
+
+                                    const day = String(parsedDate.getDate()).padStart(2, '0');
+                                    const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+                                    const year = parsedDate.getFullYear();
+
+                                    return `${day}.${month}.${year}`;
+                                } catch (err) {
+                                    console.error('Date parsing error:', err);
+                                    return 'Date not available';
+                                }
+                            })()}
+                        </span>
+
+                        <p class="review-text mt-3 line-clamp-3">${review.review}</p>
+                    
+                        <div class="flex flex-col mt-4 gap-5">
+                            <div>
+                                <a href="/reviews/book/${review.book.id}" class="btn-primary inline-block w-full text-center" data-link>View all reviews for this book</a>
+                            </div>
+                            <div>
+                                <a href="/reviews/${review.id}" class="btn-secondary inline-block w-full text-center" data-link>Expand this review</a>
+                            </div>
+                            <div class="flex justify-center">
+                                ${isAdmin ? `
+                                    <a href="/reviews/edit/${review.id}" class="link mr-3" data-link>Edit</a>
+                                    <a href="/reviews/delete/${review.id}" class="link" data-link>Delete</a>
+                                ` : ''}
+                            </div>
                         </div>
                     </div>
                 </div>
-            `).join('') : `
+            `).join('')}
+            </div>
+            ` : `
                 <section class="message-container">
                     <div class="message-layout">
                         <h1 class="message-title">No reviews yet</h1>
@@ -54,11 +93,11 @@ export default class extends boilerplate {
                 <section class="relative h-screen">
                     <img class="absolute w-full h-full object-cover" src="/static/images/bookglasses.jpg" alt="Book">
                     <div class="relative max-w-7xl mx-auto h-full">
-                        <div class="absolute top-1/3 right-4">
-                            <div class="bg-white/75 p-6 rounded-lg relative before:absolute before:right-4 before:-bottom-3 before:w-4 before:h-4 before:bg-white/75 before:rotate-45">
-                                <h3 class="text-3xl text-slate-500">See what others have said</h3>
-                            </div>
-                        </div>
+                        <!-- <div class="absolute top-1/3 right-4"> -->
+                        <!--     <div class="bg-white/75 p-6 rounded-lg relative before:absolute before:right-4 before:-bottom-3 before:w-4 before:h-4 before:bg-white/75 before:rotate-45"> -->
+                        <!--         <h3 class="text-3xl text-slate-500">See what others have said</h3> -->
+                        <!--     </div> -->
+                        <!-- </div> -->
                     </div>
                 </section>
 
@@ -70,12 +109,12 @@ export default class extends boilerplate {
                     </div>
                 </section>
 
-                <div class="">
+                <div class="max-w-7xl mx-auto">
                     ${reviewsHtml}
                 </div>
             `;
         } catch (error) {
-            console.error('Error:', error);
+            // console.error('Error:', error);
             return `
                 <section class="message-container">
                     <div class="message-layout">
