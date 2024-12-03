@@ -68,6 +68,7 @@ async getHtml() {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        userID: this.userId,
                         email: formData.get('email'),
                         password: formData.get('password'),
                     }),
@@ -77,12 +78,15 @@ async getHtml() {
                 // .then (console.log(document.cookie))
                 // console.log("Cookie:", document.cookie);
 
-                // const data = await response.json();
-                // console.log("Login Data:", data)
+                const data = await response.json();
+                console.log("Login Data:", data)
                 
                 if (response.ok) {
+                    const userId = data.user._id;
+                    localStorage.setItem('userId', userId);
+                    console.log("User from login form:", userId);
                     updateNavigation(true);
-                    window.history.pushState(null, null, '/profile');
+                    window.history.pushState(null, null, `/profile/${userId}`);
                     window.dispatchEvent(new PopStateEvent('popstate'));
                 } else {
                     const data = await response.json();

@@ -25,7 +25,7 @@ import { requireAdmin } from "../utils/adminCheck.js"
 
 export const homeRoutes = [
     { path: '/', view: home },
-    { path: '/profile', view: requireAuth(profile) },
+    { path: '/profile/:userId', view: requireAuth(profile) },
 ];
 
 export const bookRoutes = [

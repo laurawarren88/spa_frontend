@@ -28,6 +28,9 @@ class NewBook extends boilerplate {
             <section class="bg-softWhite py-8 mt-20">
                 <div class="max-w-3xl mx-auto px-4">
 
+                <!-- Alert container -->
+                <div id="alertContainer" class="hidden"></div>
+
                 <!-- Form Container -->
                     <div class="bg-white rounded-lg shadow-lg p-6 border border-gold">
                        

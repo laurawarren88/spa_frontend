@@ -141,8 +141,8 @@ export default class extends boilerplate {
                     </div>
                     <div class="flex justify-center">
                         ${isAdmin ? `
-                            <a href="/reviews/edit/${review.id}" data-link>Edit</a>
-                            <a href="/reviews/delete/${review.id}" data-link>Delete</a>
+                            <a href="/reviews/edit/${review.id}" class="link mr-3" data-link>Edit</a>
+                            <a href="/reviews/delete/${review.id}" class="link" data-link>Delete</a>
                         ` : ''}
                     </div>
                 </div>

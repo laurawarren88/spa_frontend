@@ -1,82 +1,135 @@
 import boilerplate from "../boilerplate.js";
 import { fetchToken } from "../../../../utils/fetchToken.js";
+import { showMessage } from "../../../../utils/messageAlert.js";
 
 class DeleteReview extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Delete Review");
         this.reviewId = params.reviewId;
+        this.bookId = params.bookId;
     }
 
     async getHtml() {
         try {
-            const token = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('token='))
-                ?.split('=')[1];
-
             const response = await fetchToken(`http://localhost:8080/api/reviews/${this.reviewId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                method: 'GET',
+                credentials: 'include',
             });
 
+            if (!response.ok) {
+                return `
+                    <section class="message-container">
+                        <div class="message-layout">
+                            <h1 class="message-title">Please login to delete a review</h1>
+                        </div>
+                    </section>
+                `;
+            }
+
             const review = await response.json();
+            this.reviewData = review;
+            console.log('Review data:', review);
+            this.bookId = review.book.id; 
+            console.log('Book ID:', this.bookId);
 
             return `
-                <div class="delete-confirmation">
-                    <h1>Delete Review</h1>
-                    <div class="review-content">
-                        <p>Are you sure you want to delete this review?</p>
-                        <blockquote>${review.review}</blockquote>
-                        <p>Rating: ${review.rating}/5</p>
+                <section class="bg-softWhite py-8 mt-20">
+
+                <!-- Alert container -->
+                <div id="alertContainer" class="hidden"></div>
+
+                    <div class="max-w-3xl mx-auto px-4">
+                        <div class="bg-white rounded-lg shadow-lg p-6 border border-gold">
+                            <h1 class="form-title items-center mb-6">Delete Review</h1>
+                            
+                            <div class="">
+                                <p class="font-playfair text-3xl text-slate-500 text-center mb-4">Are you sure you want to delete this review?</p>
+                                <blockquote class="font-lora text-justify text-slateGray mb-2">${review.review}</blockquote>
+                                <div class="rating mb-2">
+                                    ${review.rating}
+                                </div>
+                            </div>
+                            <div class="flex flex-col mt-auto gap-3">
+                                <div class="flex flex-row justify-start items-center gap-4">
+                                    <button type="button" id="confirmDelete" class="btn-primary w-36 text-center">Confirm Delete</button>
+                                    <a href="/reviews" class="link w-24 text-center" data-link>Cancel</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="action-buttons">
-                        <button type="button" id="confirmDelete">Confirm Delete</button>
-                        <a href="/reviews" data-link>Cancel</a>
-                    </div>
-                </div>
+                </section>
             `;
         } catch (error) {
             console.error('Error:', error);
-            return '<h1>Failed to load review details</h1>';
+            return `
+            <section class="message-container">
+                <div class="message-layout">
+                    <h2 class="message-title">Authentication Required</h2>
+                    <p class="message-text">Please <a href="/users/login" class="link" data-link>login</a> to delete reviews.</p>
+                </div>
+            </section>
+            `;
         }
     }
 
     async afterRender() {
         const confirmButton = document.getElementById('confirmDelete');
+        const alertContainer = document.getElementById('alertContainer');
+        
         if (confirmButton) {
+            console.log('Confirm button found:', confirmButton);
+    
             confirmButton.addEventListener('click', async () => {
+                console.log('Delete button clicked.');
+                confirmButton.disabled = true;
+                confirmButton.textContent = 'Deleting...';
+    
+                const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('token='));
+                if (!tokenCookie) {
+                    console.error('Token not found in cookies.');
+                    showMessage(alertContainer, 'Authentication required', 'error');
+                    confirmButton.disabled = false;
+                    confirmButton.textContent = 'Confirm Delete';
+                    return;
+                }
+    
+                const token = tokenCookie.split('=')[1];
+                console.log('Using token:', token);
+                console.log('Authorization Header:', `Bearer ${token}`); 
+    
                 try {
-                    const token = document.cookie
-                        .split('; ')
-                        .find(row => row.startsWith('token='))
-                        ?.split('=')[1];
+                    console.log('Attempting to send DELETE request...');
+                    const response = await fetch(`http://localhost:8080/api/reviews/delete/${this.reviewId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        credentials: 'include',
+                    });
 
-                 // Change this line
-                const response = await fetchToken(`http://localhost:8080/api/reviews/delete/${this.reviewId}`, {
-                    method: 'DELETE',
-                    credentials: 'include',
-                    headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    },
-                })
-  
-
-                    console.log('Sending delete request for review:', this.reviewId);
-
-
-                    if (response.ok) {
+                    console.log('Request headers:', {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    });
+                
+                    if (response.status === 204 || response.ok) {
                         console.log('Review deleted successfully');
                         window.history.pushState(null, null, '/reviews');
                         window.dispatchEvent(new PopStateEvent('popstate'));
                     } else {
-                        throw new Error('Failed to delete review', response.status);
+                        const errorData = await response.json();
+                        console.error('Failed to delete review:', errorData);
+                        showMessage(alertContainer, errorData?.message || 'Failed to delete review', 'error');
                     }
                 } catch (error) {
-                    console.error('Delete error:', error);
-                    alert('Failed to delete review');
+                    console.error('Delete operation failed:', error);
+                    showMessage(alertContainer, 'Failed to delete review', 'error');
+                } finally {
+                    confirmButton.disabled = false;
+                    confirmButton.textContent = 'Confirm Delete';
                 }
             });
         }

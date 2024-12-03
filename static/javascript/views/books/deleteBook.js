@@ -38,7 +38,7 @@ async getHtml() {
           <div class="bg-white rounded-lg shadow-lg p-6 border border-gold">
             <h1 class="form-title items-center mb-6">Delete Book</h1>
               <div class="">
-                <p class="font-playfair text-3xl text-slate-500 mb-4">Are you sure you want to delete:</p>
+                <p class="font-playfair text-3xl text-slate-500 mb-4">Are you sure you want to delete this book?</p>
                 <p class="text-3xl text-slate-500 mb-4"><span class="font-lora font-bold">"${book.title}"</span>?</p>
                 <p class="font-playfair text-3xl text-slate-500 mb-8">By: <span class="font-lora font-bold">${book.author}</span></p>
               </div>
@@ -54,7 +54,7 @@ async getHtml() {
       </section>
       `;
     } catch (error) {
-      // console.error('Error:', error);
+      console.error('Error:', error);
       return `
         <section class="message-container">
             <div class="message-layout">
@@ -90,11 +90,11 @@ async getHtml() {
             
             const response = await fetch(`http://localhost:8080/api/books/delete/${this.bookId}`, {
                 method: 'DELETE',
-                Credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token.split('=')[1]}`,
-                }
+                },
+                Credentials: 'include',
             });
 
             // console.log('Response received:', response);
@@ -122,8 +122,6 @@ async getHtml() {
             confirmButton.textContent = 'Confirm Delete';
         }
     });
-  // } else {
-  //   console.error('Confirm button not found.');
   }
 }
 }

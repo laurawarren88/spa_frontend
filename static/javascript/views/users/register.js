@@ -76,6 +76,9 @@ async getHtml() {
                 });
 
                 if (response.ok) {
+                    const data = await response.json();
+                    const userId = data.user._id; 
+                    localStorage.setItem('userId', userId);
                     // console.log("User registered successfully!");
                     window.history.pushState(null, null, '/users/login');
                     window.dispatchEvent(new PopStateEvent('popstate'));

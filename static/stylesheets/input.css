@@ -90,8 +90,26 @@
     @apply font-lora text-base text-slate-600 line-clamp-3;
   }
   
+  /* Rating/Stars */
   .rating {
     @apply text-gold text-lg flex items-center gap-1;
+  }
+
+  .star-rating .stars {
+    @apply flex flex-row-reverse justify-end gap-4;
+  }
+
+  .star-rating .star {
+    @apply text-2xl text-slate-300 cursor-pointer transition-colors duration-200 ease-in-out;
+  }
+
+  .star-rating .star.active {
+    @apply text-gold
+  }
+
+  .star-rating .star:hover,
+  .star-rating .star:hover ~ .star {
+    @apply text-gold
   }
 
   /* forms */
