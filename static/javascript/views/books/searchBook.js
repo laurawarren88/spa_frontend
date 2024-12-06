@@ -85,7 +85,7 @@ async afterRender() {
             .join('&');
 
         try {
-            const response = await fetch(`http://localhost:8080/api/books/search?${filteredParams}`);            
+            const response = await fetch(`http://localhost:8080/api/books/search?${filteredParams}`);
             if (!response.ok) {
                 throw new Error('Search failed');
             }
@@ -93,8 +93,8 @@ async afterRender() {
             const token = document.cookie.split('; ').find(row => row.startsWith('token='));
             const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
             const isAdmin = payload?.isAdmin || false;
-    
             const data = await response.json();
+            console.log(data);
     
             if (data.books && data.books.length > 0) {
                 searchResults.innerHTML = `
@@ -151,5 +151,12 @@ async afterRender() {
             `;
         }
     });
-}
+
+        const input = document.querySelector('input[name="title"]', 'input[name="author"]', 'input[name="category"]');
+        input.addEventListener('input', () => {
+            if (input.value) {
+                searchResults.innerHTML = '';
+            }
+        })
+    }
 }
