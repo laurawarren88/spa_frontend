@@ -6,7 +6,6 @@ class EditBook extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Edit the Book");
-        console.log('Params received:', params);
         this.bookID = params.id;
         this.userID = params.userID;
     }

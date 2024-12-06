@@ -94,7 +94,6 @@ async afterRender() {
             const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
             const isAdmin = payload?.isAdmin || false;
             const data = await response.json();
-            console.log(data);
     
             if (data.books && data.books.length > 0) {
                 searchResults.innerHTML = `

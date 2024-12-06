@@ -74,12 +74,9 @@ async getHtml() {
                     credentials: 'include',
                 })
 
-                
-                
                 if (response.ok) {
                     const data = await response.json();
                     const userId = data.user._id;
-                    // localStorage.setItem('userId', userId);
                     localStorage.setItem("currentUser", JSON.stringify({ id: userId }));
                     updateNavigation(true);
                     updateProfileLink();

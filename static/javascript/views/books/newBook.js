@@ -115,8 +115,8 @@ class NewBook extends boilerplate {
             submitButton.textContent = 'Creating...';
 
             const formData = new FormData(form);
-            console.log('Form Data:', formData);
-            console.log('Form Data:', [...formData.entries()]);
+            // console.log('Form Data:', formData);
+            // console.log('Form Data:', [...formData.entries()]);
 
             try {
                 const response = await fetchToken('http://localhost:8080/api/books', {

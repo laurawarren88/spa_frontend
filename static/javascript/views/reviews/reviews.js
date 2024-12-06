@@ -38,7 +38,7 @@ export default class extends boilerplate {
                         <span class="text-xs text-gray-500">
                             ${(() => {
                                 const dateStr = review.created_at || '1970-01-01T00:00:00Z';
-                                console.log('Review Created At:', review.created_at);
+                                // console.log('Review Created At:', review.created_at);
 
                                 if (!dateStr) return 'Date not available'; // Handle missing dates
 

@@ -5,6 +5,7 @@ import { showMessage } from '../../utils/messageAlert.js';
 router();
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded');
     initScrollNavigation();
     mobileButton();
     updateProfileLink();

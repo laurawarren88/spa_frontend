@@ -5,16 +5,13 @@ class Profile extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Profile");
-        this.userId = params.id || localStorage.getItem('userId'); 
+        this.userId = params.id || JSON.parse(localStorage.getItem("currentUser"))?.id;
     }
 
     async getHtml() {
         try {
             const response = await fetchToken(`http://localhost:8080/api/profile/${this.userId}`)
-
             const user = await response.json();
-            console.log("User Data:", user);
-
             const isAdminUser = user && user.isAdmin === true;
             
             if (isAdminUser) {

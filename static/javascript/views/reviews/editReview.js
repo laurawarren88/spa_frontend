@@ -31,7 +31,7 @@ async getHtml() {
 
         const review = await response.json();
         this.reviewData = review;
-        console.log('Review data:', review);
+        // console.log('Review data:', review);
 
         const ratingHtml = `
             <div>
@@ -153,8 +153,6 @@ async getHtml() {
                     password: this.reviewData.user.password
                 }
             };
-            
-            console.log('Submitting review data:', reviewData);
 
             try {
                 const response = await fetch(`http://localhost:8080/api/reviews/edit/${this.reviewId}`, {
@@ -165,10 +163,6 @@ async getHtml() {
                     },
                     body: JSON.stringify(reviewData)
                 });
-
-                console.log('Request URL:', `http://localhost:8080/api/reviews/edit/${this.reviewId}`);
-                console.log('Request method:', 'PUT');
-                console.log('Request body:', JSON.stringify(reviewData));
             
                 if (response.status === 204 || response.ok) {
                     window.history.pushState(null, null, '/reviews');

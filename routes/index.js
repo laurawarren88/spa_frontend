@@ -19,6 +19,7 @@ const router = async () => {
     let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
 
     if (!match) {
+        console.warn('No match found, redirecting to home.');
         match = {
             route: routes[0],
             result: [location.pathname]
@@ -34,21 +35,17 @@ const router = async () => {
     }
 };
 
-// const handleNavigation = (e) => {
-//     if (e.target.matches('[data-link]')) {
-//         e.preventDefault();
-//         const href = e.target.getAttribute('href');
-//         window.history.pushState({}, '', href);
-//         router();
-//     }
-// };
-
 const handleNavigation = (e) => {
     if (e.target.matches('[data-link]')) {
         e.preventDefault();
         const targetUrl = e.target.getAttribute('href');
+        console.log(`Navigating to: ${targetUrl}`);
         
         if (targetUrl) {
+            if (e.metaKey || e.ctrlKey) {
+                window.open(targetUrl, '_blank');
+                return;
+            }
             window.history.pushState(null, null, targetUrl);
             router();
         }
