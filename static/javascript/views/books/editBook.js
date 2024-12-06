@@ -61,8 +61,14 @@ class EditBook extends boilerplate {
                                         </div>
                                     </div>
                                     <div class="space-y-6">
-                                        <img id="imagePreview" src="data:image/jpeg;base64,${book.image}" alt="${book.title}" class="mx-auto h-96 w-96 object-cover mb-2">
-                                        <input type="file" id="imageInput" name="image" accept="image/*" class="hidden">   
+                                        <label class="form-label">Book Cover Image</label>
+                                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                                            <input type="file" id="imageInput" name="image" accept="image/*" class="hidden">
+                                        <label for="imageInput" class="cursor-pointer">
+                                            <img id="imagePreview" src="data:image/jpeg;base64,${book.image}" alt="${book.title}" class="mx-auto h-96 w-96 object-cover mb-2">
+                                            <span class="border border-gold text-sm text-gray-500 m-3 rounded">Click to upload image</span>
+                                        </label>
+                                        </div> 
                                     </div>
                                 </div>
                                 <div class="flex flex-col mt-auto gap-3">
