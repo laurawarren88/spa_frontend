@@ -34,13 +34,24 @@ const router = async () => {
     }
 };
 
-// Add this new function
+// const handleNavigation = (e) => {
+//     if (e.target.matches('[data-link]')) {
+//         e.preventDefault();
+//         const href = e.target.getAttribute('href');
+//         window.history.pushState({}, '', href);
+//         router();
+//     }
+// };
+
 const handleNavigation = (e) => {
     if (e.target.matches('[data-link]')) {
         e.preventDefault();
-        const href = e.target.getAttribute('href');
-        window.history.pushState({}, '', href);
-        router();
+        const targetUrl = e.target.getAttribute('href');
+        
+        if (targetUrl) {
+            window.history.pushState(null, null, targetUrl);
+            router();
+        }
     }
 };
 

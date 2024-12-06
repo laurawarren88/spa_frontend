@@ -35,6 +35,8 @@ class Logout extends boilerplate {
             });
             
             if (response.ok) {
+                localStorage.clear();
+                sessionStorage.clear();
                 updateNavigation(false);
                 document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost; samesite=lax";
                 setTimeout(() => {

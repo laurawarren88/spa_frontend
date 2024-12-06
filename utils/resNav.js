@@ -1,17 +1,3 @@
-export function updateNavigation(isAuthenticated) {
-    const publicLinks = document.querySelector('.auth-public');
-    const privateLinks = document.querySelector('.auth-private');
-    
-    if (isAuthenticated) {
-        publicLinks.classList.add('hidden');
-        privateLinks.classList.remove('hidden');
-    } else {
-        publicLinks.classList.remove('hidden');
-        privateLinks.classList.add('hidden');
-    }
-}
-updateNavigation(false);
-
 export function initScrollNavigation() {
     const navbar = document.querySelector('nav');
     window.addEventListener('scroll', () => {
@@ -37,3 +23,29 @@ export function mobileButton() {
         navbar.classList.add('transition-all', 'duration-300');
     });
 }
+
+
+export function updateProfileLink() {
+    const profileLink = document.querySelector('#profile-link'); // Ensure this targets the correct element
+    const userId = JSON.parse(localStorage.getItem('currentUser'))?.id;
+
+    if (profileLink && userId) {
+        profileLink.setAttribute('href', `/profile/${userId}`);
+    } else {
+        console.warn('Profile link or user ID not found.');
+    }
+}
+
+export function updateNavigation(isAuthenticated) {
+    const publicLinks = document.querySelector('.auth-public');
+    const privateLinks = document.querySelector('.auth-private');
+    
+    if (isAuthenticated) {
+        publicLinks.classList.add('hidden');
+        privateLinks.classList.remove('hidden');
+    } else {
+        publicLinks.classList.remove('hidden');
+        privateLinks.classList.add('hidden');
+    }
+}
+

@@ -92,11 +92,6 @@ export default class extends boilerplate {
                 <section class="relative h-screen">
                     <img class="absolute w-full h-full object-cover" src="/static/images/bookglasses.jpg" alt="Book">
                     <div class="relative max-w-7xl mx-auto h-full">
-                        <!-- <div class="absolute top-1/3 right-4"> -->
-                        <!--     <div class="bg-white/75 p-6 rounded-lg relative before:absolute before:right-4 before:-bottom-3 before:w-4 before:h-4 before:bg-white/75 before:rotate-45"> -->
-                        <!--         <h3 class="text-3xl text-slate-500">See what others have said</h3> -->
-                        <!--     </div> -->
-                        <!-- </div> -->
                     </div>
                 </section>
 

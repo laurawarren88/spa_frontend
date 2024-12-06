@@ -1,6 +1,6 @@
 import boilerplate from "../boilerplate.js";
 import { showMessage } from "../../../../utils/messageAlert.js";
-import { updateNavigation } from "../../../../utils/resNav.js";
+import { updateNavigation, updateProfileLink } from "../../../../utils/resNav.js";
 
 export default class extends boilerplate {
     constructor(params) {
@@ -74,12 +74,16 @@ async getHtml() {
                     credentials: 'include',
                 })
 
-                const data = await response.json();
+                
                 
                 if (response.ok) {
+                    const data = await response.json();
                     const userId = data.user._id;
-                    localStorage.setItem('userId', userId);
+                    // localStorage.setItem('userId', userId);
+                    localStorage.setItem("currentUser", JSON.stringify({ id: userId }));
                     updateNavigation(true);
+                    updateProfileLink();
+                    
                     window.history.pushState(null, null, `/profile/${userId}`);
                     window.dispatchEvent(new PopStateEvent('popstate'));
                 } else {
