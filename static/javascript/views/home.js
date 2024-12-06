@@ -21,7 +21,6 @@ export default class extends boilerplate {
             const data = await response.json();
             const books = data.books || [];
 
-            // Display just 12 books and random every page load
             const randomBooks = books
             .sort(() => Math.random() - 0.5)
             .slice(0, 12);
@@ -110,7 +109,7 @@ export default class extends boilerplate {
                 </section> 
             `;
         } catch (error) {
-            // console.error('Error fetching books:', error);
+            console.error('Error fetching books:', error);
             return `
                 <section class="message-container">
                     <div class="message-layout">
@@ -142,14 +141,15 @@ export default class extends boilerplate {
                 const token = document.cookie.split('; ').find(row => row.startsWith('token='));
                 const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
                 const isAdmin = payload?.isAdmin || false;
-                
+
+
                 const data = await response.json();
                 // console.log('Search results:', data);
-                
+
                 if (data.books && data.books.length > 0) {
                     booksContainer.innerHTML = '';
                     searchResults.innerHTML = `
-                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
                     ${data.books.map(book => `
                         <div class="book-card">
                             <div class="book-image-container">
@@ -210,5 +210,5 @@ export default class extends boilerplate {
                         booksContainer.style.display = 'block';    
                     }
                 });
+            }
         }
-}

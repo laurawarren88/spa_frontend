@@ -68,32 +68,39 @@ export default class extends boilerplate {
 async afterRender() {
     const searchForm = document.getElementById('searchForm');
     const searchResults = document.getElementById('searchResults');
-    const booksContainer = document.getElementById('booksContainer');
 
     searchForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(searchForm);
-    
-        const title = formData.get('title').trim();
-        const author = formData.get('author').trim();
-        const category = formData.get('category').trim();
-    
-        let queryString = '';
-        if (title) queryString += `title=${encodeURIComponent(title)}&`;
-        if (author) queryString += `author=${encodeURIComponent(author)}&`;
-        if (category) queryString += `category=${encodeURIComponent(category)}&`;
-    
+        
+        // Build search parameters object
+        const searchParams = {
+            title: formData.get('title').trim(),
+            author: formData.get('author').trim(),
+            category: formData.get('category').trim()
+        };
+
+        // Filter out empty values
+        const filteredParams = Object.entries(searchParams)
+            .filter(([_, value]) => value !== '')
+            .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+            .join('&');
+
         try {
-            const response = await fetch(`http://localhost:8080/api/books?${queryString}`);
-            
+            const response = await fetch(`http://localhost:8080/api/books/search?${filteredParams}`);            
             if (!response.ok) {
                 throw new Error('Search failed');
             }
+
+            const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+            const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
+            const isAdmin = payload?.isAdmin || false;
     
             const data = await response.json();
-            console.log('Search results:', data); 
+            // console.log('Search results:', data); 
     
             if (data.books && data.books.length > 0) {
+                // booksContainer.innerHTML = '';
                 searchResults.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
                         ${data.books.map(book => `
@@ -101,20 +108,22 @@ async afterRender() {
                                 <div class="book-image-container">
                                     <img src="data:image/jpeg;base64,${book.image}" alt="${book.title}" class="h-full w-full object-cover" />
                                 </div>
-                                <div>
-                                    <h3 class="book-title">${book.title}</h3>
-                                    <p class="font-lora mb-2 text-slate-700 leading-normal font-light italic">${book.author}</p>
-                                    <p class="font-lora mb-2 rounded py-0.5 border border-gold text-xs text-slate-600 transition-all w-20 text-center uppercase tracking-wider">${book.category}</p>
-                                    <p class="font-lora mb-3 text-slate-800 leading-normal font-light">${book.description.substring(0, 48)}${book.description.length > 48 ? '...' : ''}</p>
-                                </div>
-                                <div class="flex flex-col mt-auto gap-3">
-                                    <div class="flex flex-row justify-start items-center gap-4">
-                                        <a href="/books/${book.id}" class="btn-primary w-24 text-center" data-link>View</a>
-                                        ${token ? `<a href="/reviews/new/${book.id}" class="btn-secondary w-24 text-center" data-link>Review</a>` : ''}
-                                        ${isAdmin ? `
-                                            <a href="/books/edit/${book.id}" class="link" data-link>Edit</a>
-                                            <a href="/books/delete/${book.id}" class="link" data-link>Delete</a>
-                                        ` : ''}
+                                <div class="book-content">
+                                    <div>
+                                        <h3 class="book-title">${book.title}</h3>
+                                        <p class="font-lora mb-2 text-slate-700 leading-normal font-light italic">${book.author}</p>
+                                        <p class="font-lora mb-2 rounded py-0.5 border border-gold text-xs text-slate-600 transition-all w-20 text-center uppercase tracking-wider">${book.category}</p>
+                                        <p class="font-lora mb-3 text-slate-800 leading-normal font-light">${book.description.substring(0, 48)}${book.description.length > 48 ? '...' : ''}</p>
+                                    </div>
+                                    <div class="flex flex-col mt-auto gap-3">
+                                        <div class="flex flex-row justify-start items-center gap-4">
+                                            <a href="/books/${book.id}" class="btn-primary w-24 text-center" data-link>View</a>
+                                            ${token ? `<a href="/reviews/new/${book.id}" class="btn-secondary w-24 text-center" data-link>Review</a>` : ''}
+                                            ${isAdmin ? `
+                                                <a href="/books/edit/${book.id}" class="link" data-link>Edit</a>
+                                                <a href="/books/delete/${book.id}" class="link" data-link>Delete</a>
+                                            ` : ''}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -122,6 +131,7 @@ async afterRender() {
                     </div>
                 `;
             } else {
+                // booksContainer.innerHTML = '';
                 searchResults.innerHTML = `
                     <section class="message-container">
                         <div class="message-layout">
@@ -131,6 +141,9 @@ async afterRender() {
                     </section>
                 `;
             }
+
+            searchForm.reset();
+
         } catch (error) {
             console.log('Search error:', error);
             searchResults.innerHTML = `

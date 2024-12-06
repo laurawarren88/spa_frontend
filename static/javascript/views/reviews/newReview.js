@@ -11,15 +11,17 @@ class NewReview extends boilerplate {
 
     async getHtml() {
         try {
-            const bookResponse = await fetchToken(`http://localhost:8080/api/reviews/new/${this.bookId}`);
-            const responseData = await bookResponse.json();
+            const response = await fetchToken(`http://localhost:8080/api/reviews/new/${this.bookId}`);
+            const data = await response.json();
 
-            const bookData = responseData.book;
-
-            if (!bookData) {
-                console.error("Book data is missing:", responseData);
-                throw new Error("Failed to fetch book data");
+            console.log('API Response:', data);
+    
+            if (!data.book || !data.user) {
+                throw new Error("Incomplete data received from API");
             }
+    
+            const book = data.book;
+            const user = data.user;
 
             // ** Uncomment for debugging **
             // console.log('Book Data:', this.params);
@@ -31,7 +33,7 @@ class NewReview extends boilerplate {
                     <label class="form-label" for="rating">Rating:</label>
                     <div class="star-rating">
                         <div class="stars">
-                            ${[1,2,3,4,5].map(num => `
+                            ${[5,4,3,2,1].map(num => `
                                 <span class="star" data-rating="${num}">★</span>
                             `).join('')}
                         </div>
@@ -50,7 +52,7 @@ class NewReview extends boilerplate {
                 <!-- Form Container -->
                     <div class="bg-white rounded-lg shadow-lg p-6 border border-gold">
                        
-                        <h1 class="form-title items-center mb-6">Review for ${bookData.title}</h1>
+                        <h1 class="form-title items-center mb-6">${user.username}, leave a review for ${book.title}</h1>
 
                             <form id="reviewForm" class="space-y-6">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -87,6 +89,17 @@ class NewReview extends boilerplate {
 
     async afterRender() {
         const form = document.getElementById('reviewForm');
+        if (!form) {
+            console.error('Form element not found');
+            return;
+        }
+
+        // const username = localStorage.getItem('username');
+        // const usernameElement = document.getElementById("username");
+        // if (usernameElement) {
+        //     usernameElement.textContent = username;
+        // }
+
         const stars = document.querySelectorAll('.star');
         const ratingInput = document.getElementById('rating');
 
@@ -97,7 +110,7 @@ class NewReview extends boilerplate {
                 
                 stars.forEach(s => {
                     s.classList.remove('active');
-                    if (s.dataset.rating >= rating) {
+                    if (s.dataset.rating <= rating) {
                         s.classList.add('active');
                     }
                 });

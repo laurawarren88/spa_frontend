@@ -80,7 +80,7 @@ class NewBook extends boilerplate {
             </section>
         `;
     } catch (error) {
-        // console.error('Error:', error);
+        console.error('Error:', error);
         return ` 
             <section class="message-container">
                 <div class="message-layout">
@@ -116,8 +116,8 @@ class NewBook extends boilerplate {
             submitButton.textContent = 'Creating...';
 
             const formData = new FormData(form);
-            // console.log('Form Data:', formData);
-            // console.log('Form Data:', [...formData.entries()]);
+            console.log('Form Data:', formData);
+            console.log('Form Data:', [...formData.entries()]);
 
             try {
                 const response = await fetchToken('http://localhost:8080/api/books', {
@@ -130,11 +130,11 @@ class NewBook extends boilerplate {
                 window.dispatchEvent(new PopStateEvent('popstate'));
             } else {
                 const data = await response.json();
-                // console.error("Error:", error);
+                console.error("Error:", error);
                 showMessage('alertContainer', data?.error || 'Failed to create book', 'error');
             }
         } catch (error) {
-            // console.error('Error:', error);
+            console.error('Error:', error);
             showMessage('alertContainer', 'An error occurred while creating the book', 'error');
         } finally {
             submitButton.disabled = false;

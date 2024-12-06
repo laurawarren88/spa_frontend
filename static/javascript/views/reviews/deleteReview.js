@@ -8,12 +8,20 @@ class DeleteReview extends boilerplate {
         this.setTitle("Delete Review");
         this.reviewId = params.reviewId;
         this.bookId = params.bookId;
+        this.userId = params.userId;
     }
 
     async getHtml() {
         try {
+            const token = document.cookie.split('=')[1];
+            console.log(token);
+
             const response = await fetchToken(`http://localhost:8080/api/reviews/${this.reviewId}`, {
                 method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
                 credentials: 'include',
             });
 
@@ -32,6 +40,8 @@ class DeleteReview extends boilerplate {
             console.log('Review data:', review);
             this.bookId = review.book.id; 
             console.log('Book ID:', this.bookId);
+            this.userId = review.user._id;
+            console.log('User ID:', this.userId);
 
             return `
                 <section class="bg-softWhite py-8 mt-20">
@@ -45,10 +55,14 @@ class DeleteReview extends boilerplate {
                             
                             <div class="">
                                 <p class="font-playfair text-3xl text-slate-500 text-center mb-4">Are you sure you want to delete this review?</p>
-                                <blockquote class="font-lora text-justify text-slateGray mb-2">${review.review}</blockquote>
+                                
+                                <h3 class="review-title">${review.book.title}</h3>
+                                <p class="font-lora mb-2 text-slate-700 leading-normal font-light italic">${review.book.author}</p>
+                                <p class="text-sm text-gray-600">Reviewed by: ${review.username}</p>
                                 <div class="rating mb-2">
-                                    ${review.rating}
+                                    ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
                                 </div>
+                                <blockquote class="font-lora text-justify text-slateGray mb-2">${review.review}</blockquote>
                             </div>
                             <div class="flex flex-col mt-auto gap-3">
                                 <div class="flex flex-row justify-start items-center gap-4">
@@ -85,47 +99,46 @@ class DeleteReview extends boilerplate {
                 confirmButton.disabled = true;
                 confirmButton.textContent = 'Deleting...';
     
-                const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('token='));
-                if (!tokenCookie) {
+                const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+                if (!token) {
                     console.error('Token not found in cookies.');
                     showMessage(alertContainer, 'Authentication required', 'error');
-                    confirmButton.disabled = false;
-                    confirmButton.textContent = 'Confirm Delete';
+                    // confirmButton.disabled = false;
+                    // confirmButton.textContent = 'Confirm Delete';
                     return;
                 }
     
-                const token = tokenCookie.split('=')[1];
-                console.log('Using token:', token);
-                console.log('Authorization Header:', `Bearer ${token}`); 
-    
                 try {
                     console.log('Attempting to send DELETE request...');
-                    const response = await fetch(`http://localhost:8080/api/reviews/delete/${this.reviewId}`, {
+                    const response = await fetchToken(`http://localhost:8080/api/reviews/delete/${this.reviewId}`, {
                         method: 'DELETE',
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
                         },
                         credentials: 'include',
                     });
 
-                    console.log('Request headers:', {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    });
+                    console.log('Response received:', response);
+                    console.log('Response status:', response.status);
                 
-                    if (response.status === 204 || response.ok) {
-                        console.log('Review deleted successfully');
+                    // if (response.status === 204 || response.ok) {
+                    if (response.ok) {
+                        // console.log('Review deleted successfully');
                         window.history.pushState(null, null, '/reviews');
                         window.dispatchEvent(new PopStateEvent('popstate'));
                     } else {
                         const errorData = await response.json();
-                        console.error('Failed to delete review:', errorData);
+                        // console.error('Failed to delete review:', errorData);
                         showMessage(alertContainer, errorData?.message || 'Failed to delete review', 'error');
                     }
+
                 } catch (error) {
-                    console.error('Delete operation failed:', error);
+                    console.log('Token:', `${token.split('=')[1]}`);
+                    console.error('Delete error:', error);
+                    console.error('Error type:', error.name);
+                    console.error('Error message:', error.message);
+                    console.error('Stack trace:', error.stack);
                     showMessage(alertContainer, 'Failed to delete review', 'error');
                 } finally {
                     confirmButton.disabled = false;

@@ -35,7 +35,7 @@ async getHtml() {
 
         const ratingHtml = `
             <div>
-                <label class="form-label" for="rating">Rating:</label>
+                <label class="form-label" for="rating"></label>
                 <div class="star-rating">
                     <div class="stars">
                         ${[5,4,3,2,1].map(num => `
@@ -56,8 +56,10 @@ async getHtml() {
                 <div class="max-w-3xl mx-auto px-4">
                     <div class="bg-white rounded-lg shadow-lg p-6 border border-gold">
 
-                    <h1 class="form-title items-center mb-6">Edit review details</h1>
-            
+                    <h1 class="form-title items-center mb-3">Edit review details</h1>
+                        <h3 class="review-title">${review.book.title}</h3>
+                        <p class="font-lora mb-2 text-slate-700 leading-normal font-light italic">${review.book.author}</p>
+                        <p class="text-sm text-gray-600">Reviewed by: ${review.username}</p>
                         <form id="editReviewForm" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-6">
@@ -143,8 +145,13 @@ async getHtml() {
                 id: this.reviewId,
                 review: document.getElementById('review').value.trim(),
                 rating: parseInt(formData.get('rating')),
-                createdAt: this.reviewData.createdAt,
-                book: this.reviewData.book
+                createdAt: this.reviewData.created_at,
+                book: this.reviewData.book,
+                user: {
+                username: this.reviewData.user.username,
+                email: this.reviewData.user.email,
+                password: this.reviewData.user.password
+                }
             };
             
             console.log('Submitting review data:', reviewData);

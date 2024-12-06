@@ -20,7 +20,7 @@ export default class extends boilerplate {
             const data = await response.json();
             console.log('Fetched data:', data);
             const reviews = data.reviews || [];
-            // console.log('Fetched review:', reviews);
+            console.log('Fetched review:', reviews);
 
             const randomReviews = reviews
             .sort(() => Math.random() - 0.5)
@@ -36,17 +36,18 @@ export default class extends boilerplate {
                         <div class="rating mb-2">
                             ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
                         </div>
+                        <p class="text-sm text-gray-600">Reviewed by: ${review.username}</p>
                         <span class="text-xs text-gray-500">
                             ${(() => {
-                                const dateStr = review.createdAt || '1970-01-01T00:00:00Z';
-                                console.log('Review Created At:', review.createdAt);
+                                const dateStr = review.created_at || '1970-01-01T00:00:00Z';
+                                console.log('Review Created At:', review.created_at);
 
                                 if (!dateStr) return 'Date not available'; // Handle missing dates
 
                                 try {
                                     const parsedDate = new Date(dateStr);
 
-                                    if (isNaN(parsedDate.getTime())) return 'Invalid date'; // Handle invalid dates
+                                    if (isNaN(parsedDate.getTime())) return 'Invalid date'; 
 
                                     const day = String(parsedDate.getDate()).padStart(2, '0');
                                     const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
@@ -114,7 +115,7 @@ export default class extends boilerplate {
                 </div>
             `;
         } catch (error) {
-            // console.error('Error:', error);
+            console.error('Error:', error);
             return `
                 <section class="message-container">
                     <div class="message-layout">
