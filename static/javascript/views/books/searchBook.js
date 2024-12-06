@@ -73,14 +73,12 @@ async afterRender() {
         e.preventDefault();
         const formData = new FormData(searchForm);
         
-        // Build search parameters object
         const searchParams = {
             title: formData.get('title').trim(),
             author: formData.get('author').trim(),
             category: formData.get('category').trim()
         };
 
-        // Filter out empty values
         const filteredParams = Object.entries(searchParams)
             .filter(([_, value]) => value !== '')
             .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
@@ -97,10 +95,8 @@ async afterRender() {
             const isAdmin = payload?.isAdmin || false;
     
             const data = await response.json();
-            // console.log('Search results:', data); 
     
             if (data.books && data.books.length > 0) {
-                // booksContainer.innerHTML = '';
                 searchResults.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
                         ${data.books.map(book => `
@@ -131,7 +127,6 @@ async afterRender() {
                     </div>
                 `;
             } else {
-                // booksContainer.innerHTML = '';
                 searchResults.innerHTML = `
                     <section class="message-container">
                         <div class="message-layout">

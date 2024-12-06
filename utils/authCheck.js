@@ -13,7 +13,6 @@ export function requireAuth(ViewClass) {
                     </div>
                 `;
             }
-
             return super.getHtml();
         }
     };

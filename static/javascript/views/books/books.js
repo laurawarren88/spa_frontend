@@ -21,7 +21,6 @@ export default class extends boilerplate {
             const data = await response.json();
             const books = data.books || [];  
 
-            // Display just 50 books and random every page load
             const randomBooks = books
             .sort(() => Math.random() - 0.5)
             .slice(0, 12);
@@ -113,7 +112,7 @@ export default class extends boilerplate {
             </section> 
         `;
     } catch (error) {
-        // console.error('Error:', error);
+        console.error('Error:', error);
         return `
             <section class="message-container">
                 <div class="message-layout">
@@ -146,7 +145,6 @@ export default class extends boilerplate {
                 const isAdmin = payload?.isAdmin || false;
 
                 const data = await response.json();
-                // console.log('Search results:', data);
 
                 if (data.books && data.books.length > 0) {
                     booksContainer.innerHTML = '';
@@ -194,7 +192,7 @@ export default class extends boilerplate {
                 searchForm.reset();
 
             } catch (error) {
-                    // console.log('Search error:', error);
+                    console.log('Search error:', error);
                     searchResults.innerHTML = `
                         <section class="message-container">
                             <div class="message-layout">

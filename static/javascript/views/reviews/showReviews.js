@@ -9,12 +9,6 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            // console.log('Fetching book with ID:', this.bookId);
-
-            // if (!this.bookId) {
-            //     throw new Error('Book ID is required');
-            // }
-
             const response = await fetch(`http://localhost:8080/api/reviews/book/${this.bookId}`);
 
             if (!response.ok) {
@@ -25,7 +19,6 @@ export default class extends boilerplate {
             const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
 
             const data = await response.json();
-            console.log('Fetched data:', data);
             const bookTitle = data.bookTitle;
 
             const reviews = data.reviews ?? [];
@@ -83,7 +76,7 @@ export default class extends boilerplate {
                     </div>
             `;
         } catch (error) {
-            // console.error('Error:', error);
+            console.error('Error:', error);
             return  ` 
                 <section class="message-container">
                     <div class="message-layout">

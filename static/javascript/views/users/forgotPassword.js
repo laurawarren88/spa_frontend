@@ -67,11 +67,11 @@ async getHtml() {
                     window.dispatchEvent(new PopStateEvent('popstate'));
                 } else {
                     const data = await response.json();
-                    // console.error("Error:", error);
+                    console.error("Error:", error);
                     showMessage('alertContainer', data?.error || 'Failed to reset password', 'error');
                 }
             } catch (error) {
-                // console.error('Error:', error);
+                console.error('Error:', error);
                 showMessage('alertContainer', 'An error occurred while resetting password', 'error');
             }
         });

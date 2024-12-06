@@ -8,13 +8,7 @@ export default class extends boilerplate {
     }
 
     async getHtml() {
-        try {
-            // console.log('Fetching review with ID:', this.reviewId);
-    
-            // if (!this.reviewId) {
-            //     throw new Error('Review ID is required');
-            // }
-    
+        try {    
             const response = await fetch(`http://localhost:8080/api/reviews/${this.reviewId}`);
             
             if (!response.ok) {
@@ -24,9 +18,7 @@ export default class extends boilerplate {
             const token = document.cookie.split('; ').find(row => row.startsWith('token='));
             const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
             const isAdmin = payload?.isAdmin || false;
-    
             const review = await response.json();
-            // console.log('Fetched data:', review);
     
             return `
                 <section class="bg-softWhite py-8 mt-20">
@@ -57,7 +49,7 @@ export default class extends boilerplate {
                 </section>
             `;
         } catch (error) {
-            // console.error('Error:', error);
+            console.error('Error:', error);
             return ` 
                 <section class="message-container">
                     <div class="message-layout">

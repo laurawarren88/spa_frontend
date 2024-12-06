@@ -66,64 +66,48 @@ async getHtml() {
     }
 }
 
-  async afterRender() {
-    const confirmButton = document.getElementById('submit');
-    const alertContainer = document.getElementById('alertContainer');
-    
-    if (confirmButton) {
-      // console.log('Confirm button found:', confirmButton);
-
-      confirmButton.addEventListener('click', async () => {
-        // console.log('Delete button clicked.');
+    async afterRender() {
+      const confirmButton = document.getElementById('submit');
+      const alertContainer = document.getElementById('alertContainer');
+      
+      if (confirmButton) {
+        confirmButton.addEventListener('click', async () => {
         confirmButton.disabled = true;
         confirmButton.textContent = 'Deleting...';
 
-        const token = document.cookie.split('; ').find(row => row.startsWith('token='));
-            if (!token) {
-                showMessage(alertContainer, 'Authentication required', 'error');
-                return;
-            }
-        
-        try {
-            // console.log('Sending DELETE request to API...');
-            // console.log('Book ID:', this.bookId);
-            
-            const response = await fetch(`http://localhost:8080/api/books/delete/${this.bookId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token.split('=')[1]}`,
-                },
-                Credentials: 'include',
-            });
+          const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+              if (!token) {
+                  showMessage(alertContainer, 'Authentication required', 'error');
+                  return;
+              }
+          
+          try {            
+              const response = await fetch(`http://localhost:8080/api/books/delete/${this.bookId}`, {
+                  method: 'DELETE',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${token.split('=')[1]}`,
+                  },
+                  Credentials: 'include',
+              });
 
-            // console.log('Response received:', response);
-            // console.log('Response status:', response.status);
-
-            if (response.ok) {
-                // console.log('Book deleted successfully. Redirecting to /books...');
-                window.history.pushState(null, null, '/books');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-            } else {
-                const errorData = await response.json();
-                // console.error('Failed to delete book. Server responded with:', errorData);
-
-                showMessage(alertContainer, errorData?.message || 'Failed to delete book', 'error');
-            }
-        } catch (error) {
-          // console.error('Delete error:', error);
-          // console.error('Error type:', error.name);
-          // console.error('Error message:', error.message);
-          // console.error('Stack trace:', error.stack);
-
-          showMessage(alertContainer, 'Network connection error - please try again', 'error');
-        } finally {
-            confirmButton.disabled = false;
-            confirmButton.textContent = 'Confirm Delete';
-        }
-    });
+              if (response.ok) {
+                  window.history.pushState(null, null, '/books');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+              } else {
+                  const errorData = await response.json();
+                  showMessage(alertContainer, errorData?.message || 'Failed to delete book', 'error');
+              }
+          } catch (error) {
+            console.error('Error message:', error.message);
+            showMessage(alertContainer, 'Network connection error - please try again', 'error');
+          } finally {
+              confirmButton.disabled = false;
+              confirmButton.textContent = 'Confirm Delete';
+          }
+      });
+    }
   }
-}
 }
 
 

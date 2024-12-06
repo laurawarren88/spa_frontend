@@ -79,16 +79,15 @@ async getHtml() {
                     const data = await response.json();
                     const userId = data.user._id; 
                     localStorage.setItem('userId', userId);
-                    // console.log("User registered successfully!");
                     window.history.pushState(null, null, '/users/login');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                 } else {
                     const data = await response.json();
-                    // console.error("Error:", error);
+                    console.error("Error:", error);
                     showMessage('alertContainer', data?.error || 'Failed to create an account', 'error');
                 }
             } catch (error) {
-                // console.error('Error:', error);
+                console.error('Error:', error);
                 showMessage('alertContainer', 'An error occurred while creating the account', 'error');
             }
         });

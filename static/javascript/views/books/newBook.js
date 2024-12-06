@@ -1,6 +1,5 @@
 import boilerplate from "../boilerplate.js";
 import { fetchToken } from "../../../../utils/fetchToken.js";
-import { requireAuth } from "../../../../utils/authCheck.js";
 import { showMessage } from "../../../../utils/messageAlert.js";
 
 class NewBook extends boilerplate {

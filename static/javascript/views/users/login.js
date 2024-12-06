@@ -59,7 +59,6 @@ async getHtml() {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(form);
-            // const jsonData = Object.fromEntries(formData.entries());
             
             try {
                 const response = await fetch('http://localhost:8080/api/users/login', {
@@ -75,26 +74,21 @@ async getHtml() {
                     credentials: 'include',
                 })
 
-                // .then (console.log(document.cookie))
-                // console.log("Cookie:", document.cookie);
-
                 const data = await response.json();
-                console.log("Login Data:", data)
                 
                 if (response.ok) {
                     const userId = data.user._id;
                     localStorage.setItem('userId', userId);
-                    console.log("User from login form:", userId);
                     updateNavigation(true);
                     window.history.pushState(null, null, `/profile/${userId}`);
                     window.dispatchEvent(new PopStateEvent('popstate'));
                 } else {
                     const data = await response.json();
-                    // console.error("Error:", error);
+                    console.error("Error:", error);
                     showMessage('alertContainer', data?.error || 'Failed to login', 'error');
                 }
             } catch (error) {
-                // console.error('Error:', error);
+                console.error('Error:', error);
                 showMessage('alertContainer', 'An error occurred while logging in', 'error');
             }
         });

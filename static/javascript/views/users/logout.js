@@ -43,11 +43,11 @@ class Logout extends boilerplate {
                 }, 1000);
             } else {
                 const data = await response.json();
-                // console.error("Error:", error);
+                console.error("Error:", error);
                 showMessage('alertContainer', data?.error || 'Failed to logout', 'error');
             }
         } catch (error) {
-            // console.error('Error:', error);
+            console.error('Error:', error);
             showMessage('alertContainer', 'An error occurred while logging out', 'error');
         }
     }

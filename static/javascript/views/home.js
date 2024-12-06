@@ -129,7 +129,6 @@ export default class extends boilerplate {
         searchForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const formData = new FormData(searchForm);
-            
             const searchQuery = formData.get('title');
 
         try {
@@ -141,8 +140,6 @@ export default class extends boilerplate {
                 const token = document.cookie.split('; ').find(row => row.startsWith('token='));
                 const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
                 const isAdmin = payload?.isAdmin || false;
-
-
                 const data = await response.json();
                 // console.log('Search results:', data);
 
@@ -191,7 +188,7 @@ export default class extends boilerplate {
                     searchForm.reset();
                     
                 } catch (error) {
-                        // console.log('Search error:', error);
+                        console.log('Search error:', error);
                         searchResults.innerHTML = ` 
                             <section class="message-container">
                                 <div class="message-layout">

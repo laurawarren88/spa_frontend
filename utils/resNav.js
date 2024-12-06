@@ -10,9 +10,7 @@ export function updateNavigation(isAuthenticated) {
         privateLinks.classList.add('hidden');
     }
 }
-
 updateNavigation(false);
-
 
 export function initScrollNavigation() {
     const navbar = document.querySelector('nav');

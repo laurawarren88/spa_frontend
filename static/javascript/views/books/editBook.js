@@ -109,7 +109,6 @@ class EditBook extends boilerplate {
         const imageInput = document.getElementById('imageInput');
         const imagePreview = document.getElementById('imagePreview');
         let currentImageBase64 = imagePreview.src.split(',')[1];
-        // const bookID = this.bookID; 
     
         imageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -154,17 +153,16 @@ class EditBook extends boilerplate {
                 });
         
                 if (response.ok) {
-                    // console.log('Redirecting to:', `/books/${this.bookID}`);
-                    // console.log('Before redirect:', window.location.href);
                     window.history.pushState(null, null, `/books/${this.bookID}`);
                     window.dispatchEvent(new PopStateEvent('popstate'));
-                    // console.log('After redirect:', window.location.href);
                 } else {
-                    throw new Error('Update failed');
+                    const errorText = await response.text();
+                    console.log('Error response:', errorText);
+                    const errorData = errorText ? JSON.parse(errorText) : {};
+                    showMessage('alertContainer', errorData?.error || 'Update failed', 'error');
                 }
             } catch (error) {
-                // console.log('Network error:', error);
-                // console.error('Error:', error);
+                console.error('Error:', error);
                 showMessage('alertContainer', 'Failed to update book', 'error');
             } finally {
                 submitButton.disabled = false;
@@ -172,5 +170,4 @@ class EditBook extends boilerplate {
         });
     }
 }
-
 export default EditBook;

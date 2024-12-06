@@ -18,9 +18,7 @@ export default class extends boilerplate {
             const isAdmin = payload?.isAdmin || false;
 
             const data = await response.json();
-            console.log('Fetched data:', data);
             const reviews = data.reviews || [];
-            console.log('Fetched review:', reviews);
 
             const randomReviews = reviews
             .sort(() => Math.random() - 0.5)

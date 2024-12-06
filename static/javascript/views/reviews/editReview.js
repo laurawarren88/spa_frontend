@@ -148,9 +148,9 @@ async getHtml() {
                 createdAt: this.reviewData.created_at,
                 book: this.reviewData.book,
                 user: {
-                username: this.reviewData.user.username,
-                email: this.reviewData.user.email,
-                password: this.reviewData.user.password
+                    username: this.reviewData.user.username,
+                    email: this.reviewData.user.email,
+                    password: this.reviewData.user.password
                 }
             };
             

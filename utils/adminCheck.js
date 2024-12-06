@@ -5,7 +5,6 @@ export function requireAdmin(ViewClass) {
                 .split('; ')
                 .find(row => row.startsWith('token='));
             
-            // Decode JWT token to check isAdmin field
             const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
             
             if (!payload?.isAdmin) {
@@ -16,7 +15,6 @@ export function requireAdmin(ViewClass) {
                     </div>
                 `;
             }
-            
             return super.getHtml();
         }
     };

@@ -13,8 +13,6 @@ class NewReview extends boilerplate {
         try {
             const response = await fetchToken(`http://localhost:8080/api/reviews/new/${this.bookId}`);
             const data = await response.json();
-
-            console.log('API Response:', data);
     
             if (!data.book || !data.user) {
                 throw new Error("Incomplete data received from API");
@@ -22,11 +20,6 @@ class NewReview extends boilerplate {
     
             const book = data.book;
             const user = data.user;
-
-            // ** Uncomment for debugging **
-            // console.log('Book Data:', this.params);
-            // console.log('Book ID:', this.bookId);
-            // console.log('Book Title:', bookData.title);
 
             const ratingHtml = `
                 <div>
@@ -94,12 +87,6 @@ class NewReview extends boilerplate {
             return;
         }
 
-        // const username = localStorage.getItem('username');
-        // const usernameElement = document.getElementById("username");
-        // if (usernameElement) {
-        //     usernameElement.textContent = username;
-        // }
-
         const stars = document.querySelectorAll('.star');
         const ratingInput = document.getElementById('rating');
 
@@ -149,11 +136,11 @@ class NewReview extends boilerplate {
                     window.dispatchEvent(new PopStateEvent('popstate'));
                 } else {
                     const data = await response.json();
-                    // console.error("Error:", error);
+                    console.error("Error:", error);
                     showMessage('alertContainer', data?.error || 'Failed to create review', 'error');
                 }
             } catch (error) {
-                // console.error('Error:', error);
+                console.error('Error:', error);
                 showMessage('alertContainer', 'An error occurred while creating the review.', 'error');
             }
         });

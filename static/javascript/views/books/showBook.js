@@ -4,13 +4,11 @@ export default class extends boilerplate {
     constructor(params) {
         super(params);
         this.setTitle("Book Details");
-        // console.log('Params received:', params);
         this.bookId = params.id;
     }
 
     async getHtml() {
         try {
-            // console.log('Fetching book with ID:', this.bookId);
             if (!this.bookId) {  
                 return ` 
                     <section class="message-container">
@@ -34,7 +32,6 @@ export default class extends boilerplate {
             const token = document.cookie.split('; ').find(row => row.startsWith('token='));
             const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
             const isAdmin = payload?.isAdmin || false;
-    
             const book = await response.json();
     
             return `
@@ -66,7 +63,7 @@ export default class extends boilerplate {
             </section>
             `;
         } catch (error) {
-            // console.error('Error:', error);
+            console.error('Error:', error);
             return ` 
                 <section class="message-container">
                     <div class="message-layout">
