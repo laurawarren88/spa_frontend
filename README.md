@@ -71,4 +71,4 @@ To run the backend you will need to go to the following repository:
 https://github.com/laurawarren88/spa_backend
 ```
 
-Follow the instructions in the README.md file to run the backend.
+Follow the instructions in the README.md file to run the backend. If you change the backend port or aren't running on localhost ensure you change the config.js file in this repository -utils/config.js.
