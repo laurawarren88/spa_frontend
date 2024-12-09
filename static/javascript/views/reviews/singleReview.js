@@ -30,7 +30,7 @@ export default class extends boilerplate {
                             <div class="rating flex justify-center">
                                 ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
                             </div>
-                            <p class="text-sm text-gray-600 text-center">Review by: ${review.username}</p>
+                            <p class="text-sm text-gray-600 text-center">Review by: ${review.username || 'Unknown User'}</p>
 
                              <div class="py-4">
                                 <p class="font-lora text-justify">${review.review}</p>

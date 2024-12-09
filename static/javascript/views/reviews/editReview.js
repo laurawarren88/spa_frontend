@@ -59,7 +59,7 @@ async getHtml() {
                     <h1 class="form-title items-center mb-3">Edit review details</h1>
                         <h3 class="review-title">${review.book.title}</h3>
                         <p class="font-lora mb-2 text-slate-700 leading-normal font-light italic">${review.book.author}</p>
-                        <p class="text-sm text-gray-600">Reviewed by: ${review.username}</p>
+                        <p class="text-sm text-gray-600">Reviewed by: ${review.username || 'Unkown User'}</p>
                         <form id="editReviewForm" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-6">

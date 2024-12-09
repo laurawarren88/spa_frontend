@@ -101,7 +101,7 @@ export default class extends boilerplate {
                     <div class="rating mb-2">
                         ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
                     </div>
-                    <p class="text-sm text-gray-600 mb-2">Review by: ${review.username}</p>
+                    <p class="text-sm text-gray-600 mb-2">Review by: ${review.username || 'Unknown User'}</p>
                     <span class="text-xs text-gray-500">
                         ${(() => {
                             const dateStr = review.created_at || '1970-01-01T00:00:00Z';

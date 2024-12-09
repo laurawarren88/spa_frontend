@@ -14,7 +14,7 @@ class DeleteReview extends boilerplate {
     async getHtml() {
         try {
             const token = document.cookie.split('=')[1];
-            console.log(token);
+            // console.log(token);
 
             const response = await fetchToken(`http://localhost:8080/api/reviews/${this.reviewId}`, {
                 method: 'GET',
@@ -37,11 +37,11 @@ class DeleteReview extends boilerplate {
 
             const review = await response.json();
             this.reviewData = review;
-            console.log('Review data:', review);
+            // console.log('Review data:', review);
             this.bookId = review.book.id; 
-            console.log('Book ID:', this.bookId);
+            // console.log('Book ID:', this.bookId);
             this.userId = review.user._id;
-            console.log('User ID:', this.userId);
+            // console.log('User ID:', this.userId);
 
             return `
                 <section class="bg-softWhite py-8 mt-20">
@@ -58,7 +58,7 @@ class DeleteReview extends boilerplate {
                                 
                                 <h3 class="review-title">${review.book.title}</h3>
                                 <p class="font-lora mb-2 text-slate-700 leading-normal font-light italic">${review.book.author}</p>
-                                <p class="text-sm text-gray-600">Reviewed by: ${review.username}</p>
+                                <p class="text-sm text-gray-600">Reviewed by: ${review.username || 'Unknown User'}</p>
                                 <div class="rating mb-2">
                                     ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
                                 </div>
@@ -91,20 +91,15 @@ class DeleteReview extends boilerplate {
         const confirmButton = document.getElementById('confirmDelete');
         const alertContainer = document.getElementById('alertContainer');
         
-        if (confirmButton) {
-            console.log('Confirm button found:', confirmButton);
-    
+        if (confirmButton) {    
             confirmButton.addEventListener('click', async () => {
-                console.log('Delete button clicked.');
                 confirmButton.disabled = true;
                 confirmButton.textContent = 'Deleting...';
     
                 const token = document.cookie.split('; ').find(row => row.startsWith('token='));
                 if (!token) {
-                    console.error('Token not found in cookies.');
+                    // console.error('Token not found in cookies.');
                     showMessage(alertContainer, 'Authentication required', 'error');
-                    // confirmButton.disabled = false;
-                    // confirmButton.textContent = 'Confirm Delete';
                     return;
                 }
     
@@ -119,26 +114,22 @@ class DeleteReview extends boilerplate {
                         credentials: 'include',
                     });
 
-                    console.log('Response received:', response);
-                    console.log('Response status:', response.status);
+                    // console.log('Response received:', response);
+                    // console.log('Response status:', response.status);
                 
-                    // if (response.status === 204 || response.ok) {
                     if (response.ok) {
-                        // console.log('Review deleted successfully');
+                        console.log('Review deleted successfully');
                         window.history.pushState(null, null, '/reviews');
                         window.dispatchEvent(new PopStateEvent('popstate'));
                     } else {
                         const errorData = await response.json();
-                        // console.error('Failed to delete review:', errorData);
+                        console.error('Failed to delete review:', errorData);
                         showMessage(alertContainer, errorData?.message || 'Failed to delete review', 'error');
                     }
 
                 } catch (error) {
                     console.log('Token:', `${token.split('=')[1]}`);
-                    console.error('Delete error:', error);
-                    console.error('Error type:', error.name);
                     console.error('Error message:', error.message);
-                    console.error('Stack trace:', error.stack);
                     showMessage(alertContainer, 'Failed to delete review', 'error');
                 } finally {
                     confirmButton.disabled = false;
