@@ -1,4 +1,5 @@
 import boilerplate from "../boilerplate.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 export default class extends boilerplate {
     constructor(params) {
@@ -9,7 +10,7 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {    
-            const response = await fetch(`http://localhost:8080/api/reviews/${this.reviewId}`);
+            const response = await fetch(`${BASE_URL}/reviews/${this.reviewId}`);
             
             if (!response.ok) {
                 throw new Error(`Failed to fetch review ${response.status}`);

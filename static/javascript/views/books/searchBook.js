@@ -1,4 +1,5 @@
 import boilerplate from "../boilerplate.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 export default class extends boilerplate {
     constructor(params) {
@@ -85,7 +86,7 @@ async afterRender() {
             .join('&');
 
         try {
-            const response = await fetch(`http://localhost:8080/api/books/search?${filteredParams}`);
+            const response = await fetch(`${BASE_URL}/books/search?${filteredParams}`);
             if (!response.ok) {
                 throw new Error('Search failed');
             }

@@ -1,5 +1,6 @@
 import boilerplate from "../boilerplate.js"
 import { showMessage } from "../../../../utils/messageAlert.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 export default class extends boilerplate {
     constructor (params) {
@@ -67,7 +68,7 @@ async getHtml() {
                 confirm_password: formData.get("confirm_password"),
             };
             try {
-                const response = await fetch('http://localhost:8080/api/users/register', {
+                const response = await fetch(`${BASE_URL}/users/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

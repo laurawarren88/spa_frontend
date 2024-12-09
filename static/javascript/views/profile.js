@@ -1,5 +1,6 @@
 import boilerplate from "./boilerplate.js";
 import { fetchToken } from "../../../utils/fetchToken.js";
+import { BASE_URL } from '../../../utils/config.js';
 
 class Profile extends boilerplate {
     constructor(params) {
@@ -10,7 +11,8 @@ class Profile extends boilerplate {
 
     async getHtml() {
         try {
-            const response = await fetchToken(`http://localhost:8080/api/profile/${this.userId}`)
+            const response = await fetchToken(`${BASE_URL}/profile/${this.userId}`)
+            // const response = await fetchToken(`http://localhost:8080/api/profile/${this.userId}`)
             const user = await response.json();
             const isAdminUser = user && user.isAdmin === true;
             

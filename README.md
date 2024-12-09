@@ -55,7 +55,7 @@ All you need to do to run the application is type the following into the termina
 http-server -p <port number>
 ```
 
-This will run the server on port 3000. You can then access the application by going to:
+This will run the application on your desired port. You can then access the application by going to:
 
 ```text
 http://localhost:<port number> in your browser.

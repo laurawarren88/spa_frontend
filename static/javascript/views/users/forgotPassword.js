@@ -1,5 +1,6 @@
 import boilerplate from "../boilerplate.js";
 import { showMessage } from "../../../../utils/messageAlert.js";
+// import { BASE_URL } from '../../../utils/config.js';
 
 export default class extends boilerplate {
     constructor(params) {
@@ -55,6 +56,7 @@ async getHtml() {
             
             try {
                 const response = await fetch('http://localhost:8080/api/users/forgot_password', {
+                // const response = await fetch(`${BASE_URL}/users/forgot_password`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

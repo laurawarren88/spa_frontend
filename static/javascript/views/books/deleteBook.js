@@ -1,6 +1,7 @@
 import boilerplate from "../boilerplate.js";
 import { fetchToken } from "../../../../utils/fetchToken.js";
 import { showMessage } from "../../../../utils/messageAlert.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 class DeleteBook extends boilerplate {
     constructor(params) {
@@ -11,7 +12,7 @@ class DeleteBook extends boilerplate {
 
 async getHtml() {
     try {
-      const response = await fetchToken(`http://localhost:8080/api/books/${this.bookId}`, {
+      const response = await fetchToken(`${BASE_URL}/books/${this.bookId}`, {
       method: 'GET',
       Credentials: 'include',
     });
@@ -82,7 +83,7 @@ async getHtml() {
               }
           
           try {            
-              const response = await fetch(`http://localhost:8080/api/books/delete/${this.bookId}`, {
+              const response = await fetch(`${BASE_URL}/books/delete/${this.bookId}`, {
                   method: 'DELETE',
                   headers: {
                       'Content-Type': 'application/json',

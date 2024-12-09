@@ -1,6 +1,7 @@
 import boilerplate from "../boilerplate.js";
 import { fetchToken } from "../../../../utils/fetchToken.js";
 import { showMessage } from "../../../../utils/messageAlert.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 class NewBook extends boilerplate {
     constructor(params) {
@@ -10,7 +11,7 @@ class NewBook extends boilerplate {
 
     async getHtml() {
         try {
-            const response = await fetchToken('http://localhost:8080/api/books/new', {
+            const response = await fetchToken(`${BASE_URL}/books/new`, {
                 method: 'GET',
             });
 
@@ -119,7 +120,7 @@ class NewBook extends boilerplate {
             // console.log('Form Data:', [...formData.entries()]);
 
             try {
-                const response = await fetchToken('http://localhost:8080/api/books', {
+                const response = await fetchToken(`${BASE_URL}/books`, {
                     method: 'POST',
                     body: formData
                 });

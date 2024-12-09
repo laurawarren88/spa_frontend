@@ -1,6 +1,7 @@
 import boilerplate from "../boilerplate.js";
 import { fetchToken } from "../../../../utils/fetchToken.js";
 import { showMessage } from "../../../../utils/messageAlert.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 class EditReview extends boilerplate {
     constructor(params) {
@@ -12,7 +13,7 @@ class EditReview extends boilerplate {
 
 async getHtml() {
     try {
-        const response = await fetchToken(`http://localhost:8080/api/reviews/edit/${this.reviewId}` , {
+        const response = await fetchToken(`${BASE_URL}/reviews/edit/${this.reviewId}` , {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -155,7 +156,7 @@ async getHtml() {
             };
 
             try {
-                const response = await fetch(`http://localhost:8080/api/reviews/edit/${this.reviewId}`, {
+                const response = await fetch(`${BASE_URL}/reviews/edit/${this.reviewId}`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token.split('=')[1]}`,

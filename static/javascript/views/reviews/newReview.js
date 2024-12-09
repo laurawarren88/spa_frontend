@@ -1,6 +1,7 @@
 import boilerplate from "../boilerplate.js";
 import { fetchToken } from "../../../../utils/fetchToken.js";
 import { showMessage } from "../../../../utils/messageAlert.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 class NewReview extends boilerplate {
     constructor(params) {
@@ -11,7 +12,7 @@ class NewReview extends boilerplate {
 
     async getHtml() {
         try {
-            const response = await fetchToken(`http://localhost:8080/api/reviews/new/${this.bookId}`);
+            const response = await fetchToken(`${BASE_URL}/reviews/new/${this.bookId}`);
             const data = await response.json();
     
             if (!data.book || !data.user) {
@@ -123,7 +124,7 @@ class NewReview extends boilerplate {
             };
             
             try {
-                const response = await fetchToken('http://localhost:8080/api/reviews', {
+                const response = await fetchToken(`${BASE_URL}/reviews`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

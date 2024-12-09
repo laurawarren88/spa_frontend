@@ -1,4 +1,5 @@
 import boilerplate from "./boilerplate.js";
+import { BASE_URL } from '../../../utils/config.js';
 
 export default class extends boilerplate {
     constructor(params) {
@@ -9,7 +10,7 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            const response = await fetch('http://localhost:8080/api/');
+            const response = await fetch(`${BASE_URL}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch books');
             }
@@ -132,7 +133,7 @@ export default class extends boilerplate {
             const searchQuery = formData.get('title');
 
         try {
-            const response = await fetch(`http://localhost:8080/api/books?q=${encodeURIComponent(searchQuery)}`);
+            const response = await fetch(`${BASE_URL}books?q=${encodeURIComponent(searchQuery)}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch search results');
                 }

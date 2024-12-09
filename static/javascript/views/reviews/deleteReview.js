@@ -1,6 +1,7 @@
 import boilerplate from "../boilerplate.js";
 import { fetchToken } from "../../../../utils/fetchToken.js";
 import { showMessage } from "../../../../utils/messageAlert.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 class DeleteReview extends boilerplate {
     constructor(params) {
@@ -16,7 +17,7 @@ class DeleteReview extends boilerplate {
             const token = document.cookie.split('=')[1];
             // console.log(token);
 
-            const response = await fetchToken(`http://localhost:8080/api/reviews/${this.reviewId}`, {
+            const response = await fetchToken(`${BASE_URL}/reviews/${this.reviewId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -105,7 +106,7 @@ class DeleteReview extends boilerplate {
     
                 try {
                     console.log('Attempting to send DELETE request...');
-                    const response = await fetchToken(`http://localhost:8080/api/reviews/delete/${this.reviewId}`, {
+                    const response = await fetchToken(`${BASE_URL}/reviews/delete/${this.reviewId}`, {
                         method: 'DELETE',
                         headers: {
                             'Accept': 'application/json',

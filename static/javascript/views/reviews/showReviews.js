@@ -1,4 +1,5 @@
 import boilerplate from "../boilerplate.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 export default class extends boilerplate {
     constructor(params) {
@@ -9,7 +10,7 @@ export default class extends boilerplate {
 
     async getHtml() {
         try {
-            const response = await fetch(`http://localhost:8080/api/reviews/book/${this.bookId}`);
+            const response = await fetch(`${BASE_URL}/reviews/book/${this.bookId}`);
 
             if (!response.ok) {
                 throw new Error(`Failed to fetch reviews for book: ${response.status}`);
@@ -107,12 +108,12 @@ export default class extends boilerplate {
                             const dateStr = review.created_at || '1970-01-01T00:00:00Z';
                             // console.log('Review Created At:', review.created_at);
 
-                            if (!dateStr) return 'Date not available'; // Handle missing dates
+                            if (!dateStr) return 'Date not available'; 
 
                             try {
                                 const parsedDate = new Date(dateStr);
 
-                                if (isNaN(parsedDate.getTime())) return 'Invalid date'; // Handle invalid dates
+                                if (isNaN(parsedDate.getTime())) return 'Invalid date'; 
 
                                 const day = String(parsedDate.getDate()).padStart(2, '0');
                                 const month = String(parsedDate.getMonth() + 1).padStart(2, '0');

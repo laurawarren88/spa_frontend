@@ -1,6 +1,7 @@
 import boilerplate from "../boilerplate.js";
 import { fetchToken } from "../../../../utils/fetchToken.js";
 import { showMessage } from "../../../../utils/messageAlert.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 class EditBook extends boilerplate {
     constructor(params) {
@@ -12,7 +13,7 @@ class EditBook extends boilerplate {
 
     async getHtml() {
         try {
-            const response = await fetchToken(`http://localhost:8080/api/books/edit/${this.bookID}`, {
+            const response = await fetchToken(`${BASE_URL}/books/edit/${this.bookID}`, {
                 method: 'GET',
             });
 
@@ -136,7 +137,7 @@ class EditBook extends boilerplate {
             submitButton.disabled = true;
             
             try {
-                const response = await fetch(`http://localhost:8080/api/books/edit/${this.bookID}`, {
+                const response = await fetch(`${BASE_URL}/books/edit/${this.bookID}`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token.split('=')[1]}`,

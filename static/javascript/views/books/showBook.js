@@ -1,4 +1,5 @@
 import boilerplate from "../boilerplate.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 export default class extends boilerplate {
     constructor(params) {
@@ -18,7 +19,7 @@ export default class extends boilerplate {
                     </section>
                 `;}
 
-            const response = await fetch(`http://localhost:8080/api/books/${this.bookId}`);
+            const response = await fetch(`${BASE_URL}/books/${this.bookId}`);
 
             if (!response.ok) {
                 return ` 

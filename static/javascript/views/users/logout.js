@@ -1,6 +1,7 @@
 import { updateNavigation } from "../../../../utils/resNav.js";
 import { showMessage } from "../../../../utils/messageAlert.js";
 import boilerplate from "../boilerplate.js";
+import { BASE_URL } from '../../../../utils/config.js';
 
 class Logout extends boilerplate {
     constructor(params) {
@@ -26,7 +27,7 @@ class Logout extends boilerplate {
 
     async afterRender() {
         try {
-            const response = await fetch('http://localhost:8080/api/users/logout', {
+            const response = await fetch(`${BASE_URL}/users/logout`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
