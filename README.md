@@ -15,6 +15,9 @@ In order to run this application you will need to have the following:
 
 ```text
 🔸 VS code installed
+🔸 node installed
+🔸 npm installed
+🔸 http-server installed
 ```
 
 ## 🐾 Step One
@@ -49,13 +52,13 @@ You do not have to build or change anything (you can if you want).
 All you need to do to run the application is type the following into the terminal:
 
 ```bash
-http-server -p 3000
+http-server -p <port number>
 ```
 
 This will run the server on port 3000. You can then access the application by going to:
 
 ```text
-http://localhost:3000 in your browser.
+http://localhost:<port number> in your browser.
 ```
 
 From here you will see the website and be able to interact with it.
