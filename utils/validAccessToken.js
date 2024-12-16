@@ -1,4 +1,4 @@
-export async function fetchToken(url, options = {}) {
+export async function getValidAccessToken() {
     let token = document.cookie
     .split('; ')
     .find(row => row.startsWith('access_token='))
@@ -41,34 +41,5 @@ export async function fetchToken(url, options = {}) {
         }
     }
 
-
-    const defaultOptions = {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        },
-        credentials: 'include',
-    };
-
-    if (!(options.body instanceof FormData)) {
-        defaultOptions.headers['Content-Type'] = 'application/json';
-    }
-
-    const response = await fetch(url, {
-        ...defaultOptions,
-        ...options,
-        headers: {
-            ...defaultOptions.headers,
-            ...options.headers,
-        },
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        if (response.status === 403) {
-            throw new Error('Admin access required');
-        }
-        throw new Error(errorData.error || 'Request failed');
-    }
-
-    return response;
+    return token;
 }

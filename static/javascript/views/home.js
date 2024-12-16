@@ -1,5 +1,6 @@
 import boilerplate from "./boilerplate.js";
 import { BASE_URL } from '../../../utils/config.js';
+import { getValidAccessToken } from '../../../utils/validAccessToken.js';
 
 export default class extends boilerplate {
     constructor(params) {
@@ -15,7 +16,7 @@ export default class extends boilerplate {
                 throw new Error('Failed to fetch books');
             }
 
-            const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+            const token = document.cookie.split('; ').find(row => row.startsWith('access_token='));
             const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
             const isAdmin = payload?.isAdmin || false;
             
@@ -138,7 +139,7 @@ export default class extends boilerplate {
                     throw new Error('Failed to fetch search results');
                 }
 
-                const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+                const token = document.cookie.split('; ').find(row => row.startsWith('access_token='));
                 const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
                 const isAdmin = payload?.isAdmin || false;
                 const data = await response.json();

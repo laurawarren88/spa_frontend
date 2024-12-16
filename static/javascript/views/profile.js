@@ -12,7 +12,6 @@ class Profile extends boilerplate {
     async getHtml() {
         try {
             const response = await fetchToken(`${BASE_URL}/profile/${this.userId}`)
-            // const response = await fetchToken(`http://localhost:8080/api/profile/${this.userId}`)
             const user = await response.json();
             const isAdminUser = user && user.isAdmin === true;
             
